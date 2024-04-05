@@ -1,0 +1,32 @@
+[gd_scene load_steps=6 format=3 uid="uid://8d3ys4aw51lk"]
+
+[ext_resource type="Script" path="res://scenes/player.gd" id="1_7q1sy"]
+[ext_resource type="PackedScene" uid="uid://dskjy6yd4quog" path="res://scenes/bullet.tscn" id="2_pyqhq"]
+[ext_resource type="Texture2D" uid="uid://2b76wv6jnej6" path="res://d4c933c7b5fda0b0af1475052226bbf1_200.jpg" id="3_dvrfu"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rl8oa"]
+size = Vector2(128, 128)
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_8jyo0"]
+properties/0/path = NodePath(".:score")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+
+[node name="Player" type="CharacterBody2D"]
+script = ExtResource("1_7q1sy")
+bullet_scene = ExtResource("2_pyqhq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(0.5, 0.5)
+shape = SubResource("RectangleShape2D_rl8oa")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("3_dvrfu")
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://scenes/bullet.tscn")
+spawn_path = NodePath(".")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_8jyo0")
