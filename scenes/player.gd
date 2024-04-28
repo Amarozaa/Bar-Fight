@@ -1,4 +1,8 @@
+
+class_name Player
 extends CharacterBody2D
+
+signal picked(object)
 
 var speed = 200
 var jump_speed = 300
@@ -16,6 +20,9 @@ var acceleration = 300
 		score = value
 		Debug.log("Player %s score %d" % [name, score])
 		
+func _ready()-> void:
+	picked.connect(_on_picked)
+	
 
 func _physics_process(delta: float) -> void:
 	if is_multiplayer_authority():
@@ -60,9 +67,22 @@ func test(name):
 	Debug.log(sender_player.name)
 
 #authority,call remote, relible
-@rpc	
+
+#authority: solo el con autoridad puede llamar.
+#any_peer: cualquiera puede llamar.
+
+#call_local: se llama en ambos
+#call_remote: se llama solo en la otra.
+
+
+
+#authority,call remote, relible
+
+@rpc
 func send_data(pos: Vector2):
 	global_position = pos
 #	global_position = lerp(global_position,pos,0)
 #	velocity = lerp(velocity,vel,0.75)
+func _on_picked(object: String):
+		Debug.log(object)
 

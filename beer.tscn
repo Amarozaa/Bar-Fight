@@ -1,0 +1,30 @@
+[gd_scene load_steps=4 format=3 uid="uid://co737c1nwsaoi"]
+
+[ext_resource type="Script" path="res://Beer.gd" id="1_e3xot"]
+[ext_resource type="Texture2D" uid="uid://b5csw3yh74rxm" path="res://Beer.png" id="2_84wk7"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_davds"]
+size = Vector2(81, 176)
+
+[node name="Beer" type="Area2D"]
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("1_e3xot")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture_filter = 1
+texture = ExtResource("2_84wk7")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-0.5, 59)
+shape = SubResource("RectangleShape2D_davds")
+
+[node name="Label" type="Label" parent="."]
+visible = false
+texture_filter = 1
+offset_left = -27.0
+offset_top = -52.0
+offset_right = 32.0
+offset_bottom = -29.0
+text = "Press E "
+horizontal_alignment = 1
