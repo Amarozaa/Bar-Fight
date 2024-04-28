@@ -34,7 +34,8 @@ func _physics_process(delta: float) -> void:
 		velocity.y = move_toward(velocity.y, vertical_input * speed, acceleration * delta)
 		send_data.rpc(global_position)
 		move_and_slide()
-	
+		var mouse_position = get_global_mouse_position()
+		look_at(mouse_position)
 	
 	
 	
