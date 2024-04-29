@@ -1,16 +1,19 @@
-[gd_scene load_steps=6 format=3 uid="uid://8d3ys4aw51lk"]
+[gd_scene load_steps=7 format=3 uid="uid://8d3ys4aw51lk"]
 
 [ext_resource type="Script" path="res://scenes/player.gd" id="1_7q1sy"]
 [ext_resource type="PackedScene" uid="uid://dskjy6yd4quog" path="res://scenes/bullet.tscn" id="2_pyqhq"]
-[ext_resource type="Texture2D" uid="uid://tw8t38ns0seh" path="res://icon.svg" id="3_xvomy"]
+[ext_resource type="Texture2D" uid="uid://cl312wqot4dwp" path="res://copia1.png" id="3_pipgf"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_rl8oa"]
-size = Vector2(128, 128)
+[sub_resource type="CircleShape2D" id="CircleShape2D_67exc"]
+radius = 60.0
 
 [sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_8jyo0"]
 properties/0/path = NodePath(".:score")
 properties/0/spawn = true
 properties/0/replication_mode = 2
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jmn3p"]
+radius = 32.0156
 
 [node name="Player" type="CharacterBody2D"]
 collision_layer = 2
@@ -18,13 +21,14 @@ collision_mask = 3
 script = ExtResource("1_7q1sy")
 bullet_scene = ExtResource("2_pyqhq")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["hit"]]
 scale = Vector2(0.5, 0.5)
-shape = SubResource("RectangleShape2D_rl8oa")
+shape = SubResource("CircleShape2D_67exc")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
+rotation = 1.5708
 scale = Vector2(0.5, 0.5)
-texture = ExtResource("3_xvomy")
+texture = ExtResource("3_pipgf")
 
 [node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
 _spawnable_scenes = PackedStringArray("res://scenes/bullet.tscn")
@@ -32,3 +36,11 @@ spawn_path = NodePath(".")
 
 [node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
 replication_config = SubResource("SceneReplicationConfig_8jyo0")
+
+[node name="Punch" type="Area2D" parent="."]
+
+[node name="CollissionPunch" type="CollisionShape2D" parent="Punch"]
+position = Vector2(64, 1)
+shape = SubResource("CircleShape2D_jmn3p")
+
+[connection signal="body_entered" from="Punch" to="." method="_on_punch_body_entered"]
