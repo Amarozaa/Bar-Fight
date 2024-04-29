@@ -12,7 +12,6 @@ var acceleration = 300
 @onready var multiplayer_spawner: MultiplayerSpawner = $MultiplayerSpawner
 @onready var multiplayer_synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
 #@onready var input_synchronizer = $InputSynchronizer
-
 @export var bullet_scene: PackedScene
 
 @export var score = 1 :
@@ -43,6 +42,8 @@ func _physics_process(delta: float) -> void:
 
 func _input(event: InputEvent) -> void:
 	if is_multiplayer_authority():
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			print("click")
 		if event.is_action_pressed("test"):
 			test.rpc(Game.get_current_player().name)
 			var bullet = bullet_scene.instantiate()
@@ -87,3 +88,10 @@ func send_data(pos: Vector2):
 func _on_picked(object: String):
 		Debug.log(object)
 
+
+
+func _on_punch_body_entered(body):
+	if body.is_in_group("hit"):
+		body.take_damage()
+	else:
+		pass # Replace with function body.
