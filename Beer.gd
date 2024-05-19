@@ -10,9 +10,9 @@ var player: Player
 #func _ready():
 	#pass # Replace with function body.
 func _ready() -> void:
-	#if is_multiplayer_authority():
-	body_entered.connect(_on_body_entered)
-	body_exited.connect(_on_body_exited)
+	if is_multiplayer_authority():
+		body_entered.connect(_on_body_entered)
+		body_exited.connect(_on_body_exited)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 #func _process(delta):
@@ -20,7 +20,7 @@ func _ready() -> void:
 	
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("pickup") and is_pickeable:
-		player.picked.emit(name)
+		player.picked.emit(name) 
 		picked.rpc()
 		
 func _on_body_entered(body: Node2D):
@@ -36,4 +36,12 @@ func _on_body_exited(body: Node2D):
 @rpc("any_peer","call_local") #call_local se llama en ambos
 func picked():
 	queue_free()
+	
+func setup(player_data: Statics.PlayerData):
+	name = str(player_data.id)
+	set_multiplayer_authority(player_data.id)
+	#multiplayer_spawner.set_multiplayer_authority(player_data.id)
+	#multiplayer_synchronizer.set_multiplayer_authority(player_data.id)
+	#input_synchronizer.set_multiplayer_authority(player_data.id)
+
 

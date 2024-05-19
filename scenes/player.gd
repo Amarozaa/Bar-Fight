@@ -34,7 +34,10 @@ func _physics_process(delta: float) -> void:
 		send_data.rpc(global_position)
 		move_and_slide()
 		var mouse_position = get_global_mouse_position()
-		look_at(mouse_position)
+		#look_at(mouse_position)
+		apuntar.rpc(mouse_position)
+		
+	
 	
 	
 	
@@ -85,6 +88,16 @@ func send_data(pos: Vector2):
 	global_position = pos
 #	global_position = lerp(global_position,pos,0)
 #	velocity = lerp(velocity,vel,0.75)
+
+
+
+@rpc("call_local")
+func apuntar(mouse_position) -> void:
+		look_at(mouse_position)
+	
+	
+	
+	
 func _on_picked(object: String):
 		Debug.log(object)
 
