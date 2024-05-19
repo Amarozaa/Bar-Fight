@@ -95,13 +95,13 @@ animations = [{
 "duration": 1.0,
 "texture": SubResource("AtlasTexture_n3fxf")
 }, {
-"duration": 1.5,
+"duration": 1.0,
 "texture": SubResource("AtlasTexture_mu62e")
 }, {
 "duration": 2.0,
 "texture": SubResource("AtlasTexture_wkfhv")
 }],
-"loop": false,
+"loop": true,
 "name": &"punch",
 "speed": 5.0
 }, {
@@ -130,6 +130,7 @@ collision_layer = 2
 collision_mask = 3
 script = ExtResource("1_7q1sy")
 bullet_scene = ExtResource("2_pyqhq")
+score = null
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["hit"]]
 scale = Vector2(0.5, 0.5)

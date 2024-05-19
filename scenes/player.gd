@@ -12,6 +12,7 @@ var _score = 1
 @export var bullet_scene: PackedScene
 @onready var multiplayer_spawner: MultiplayerSpawner = $MultiplayerSpawner
 @onready var multiplayer_synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
+@onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 
 @export var score = 1:
 	set(value):
@@ -20,10 +21,12 @@ var _score = 1
 
 func _ready() -> void:
 	picked.connect(_on_picked)
+	animated_sprite.connect("animation_finished", Callable(self, "_on_animation_finished"))
 
 func _physics_process(delta: float) -> void:
 	if is_multiplayer_authority():
 		handle_movement(delta)
+	update_animation()
 
 func _input(event: InputEvent) -> void:
 	if is_multiplayer_authority():
@@ -51,6 +54,7 @@ func update_mouse_position(mouse_position: Vector2) -> void:
 	apuntar.rpc(mouse_position)
 
 func handle_shooting() -> void:
+	animated_sprite.play("punch")
 	print("click")
 
 func handle_test_action() -> void:
@@ -87,3 +91,15 @@ func _on_picked(object: String):
 func _on_punch_body_entered(body):
 	if body.is_in_group("hit"):
 		body.take_damage()
+
+func update_animation() -> void:
+	if animated_sprite.animation == "punch" and animated_sprite.is_playing():
+		return 
+	if velocity.x != 0 or velocity.y != 0:
+		animated_sprite.play("walk")
+	else:
+		animated_sprite.play("idle")
+
+func _on_animation_finished(animation_name: String) -> void:
+	if animation_name == "punch":
+		update_animation()  
