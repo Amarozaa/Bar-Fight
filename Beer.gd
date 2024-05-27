@@ -3,14 +3,15 @@ extends Area2D
 @onready var label = $Label
 
 
+
 var is_pickeable = false
-var player: Player 
+var player: Player
+var _PLAYER
 
 # Called when the node enters the scene tree for the first time.
 #func _ready():
 	#pass # Replace with function body.
 func _ready() -> void:
-	if is_multiplayer_authority():
 		body_entered.connect(_on_body_entered)
 		body_exited.connect(_on_body_exited)
 
@@ -20,8 +21,15 @@ func _ready() -> void:
 	
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("pickup") and is_pickeable:
-		player.picked.emit(name) 
-		picked.rpc()
+		if player.is_multiplayer_authority():
+			
+			player.picked.emit(name) 
+			picked.rpc()
+	
+		#var sender_id = multiplayer.get_remote_sender_id()
+		#var sender_player = Game.get_player(sender_id)
+	
+		#Debug.log(sender_player.name)
 		
 func _on_body_entered(body: Node2D):
 	player = body 
@@ -37,11 +45,6 @@ func _on_body_exited(body: Node2D):
 func picked():
 	queue_free()
 	
-func setup(player_data: Statics.PlayerData):
-	name = str(player_data.id)
-	set_multiplayer_authority(player_data.id)
-	#multiplayer_spawner.set_multiplayer_authority(player_data.id)
-	#multiplayer_synchronizer.set_multiplayer_authority(player_data.id)
-	#input_synchronizer.set_multiplayer_authority(player_data.id)
+
 
 

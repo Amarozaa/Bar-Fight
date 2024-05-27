@@ -2,6 +2,8 @@ class_name Player
 extends CharacterBody2D
 
 signal picked(object)
+signal health_changed(value)
+
 
 var speed = 200
 var jump_speed = 300
@@ -9,10 +11,18 @@ var gravity = 0
 var acceleration = 300
 var _score = 1
 
+var health = 100:
+	set(value):
+		health = value
+		health_changed.emit(health)
+var max_health = 100
+
+
 @export var bullet_scene: PackedScene
 @onready var multiplayer_spawner: MultiplayerSpawner = $MultiplayerSpawner
 @onready var multiplayer_synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var gui: CanvasLayer = $GUI
 
 @export var score = 1:
 	set(value):
@@ -21,7 +31,10 @@ var _score = 1
 
 func _ready() -> void:
 	picked.connect(_on_picked)
+	gui.update_health(health)
+	health_changed.connect(gui.update_health)
 	animated_sprite.connect("animation_finished", Callable(self, "_on_animation_finished"))
+	gui.hide()
 
 func _physics_process(delta: float) -> void:
 	if is_multiplayer_authority():
@@ -58,9 +71,10 @@ func handle_shooting() -> void:
 	print("click")
 
 func handle_test_action() -> void:
-	test.rpc(Game.get_current_player().name)
-	var bullet = bullet_scene.instantiate()
-	multiplayer_spawner.add_child(bullet, true)
+	health -=10
+	#test.rpc(Game.get_current_player().name)
+	#var bullet = bullet_scene.instantiate()
+	#multiplayer_spawner.add_child(bullet, true)
 	score += 1
 
 func setup(player_data: Statics.PlayerData):
@@ -68,6 +82,9 @@ func setup(player_data: Statics.PlayerData):
 	set_multiplayer_authority(player_data.id)
 	multiplayer_spawner.set_multiplayer_authority(player_data.id)
 	multiplayer_synchronizer.set_multiplayer_authority(player_data.id)
+	
+	if multiplayer.get_unique_id() == player_data.id:
+		gui.show()
 
 @rpc("authority", "call_local", "reliable")
 func test(name):

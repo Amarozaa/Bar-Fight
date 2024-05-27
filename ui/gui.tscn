@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://dkpmqn4oa3a7n"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ytmmc"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_du7hu"]
+bg_color = Color(0, 0.686275, 0.360784, 1)
+
+[node name="GUI" type="CanvasLayer"]
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+offset_right = 308.0
+offset_bottom = 63.0
+
+[node name="HealthBar" type="ProgressBar" parent="MarginContainer"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_ytmmc")
+theme_override_styles/fill = SubResource("StyleBoxFlat_du7hu")
+value = 21.21

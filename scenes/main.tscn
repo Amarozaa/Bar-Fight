@@ -29,4 +29,7 @@ texture = ExtResource("3_ryb57")
 [node name="Beer" parent="." instance=ExtResource("4_0qm31")]
 position = Vector2(444, 542)
 
+[node name="Beer2" parent="." instance=ExtResource("4_0qm31")]
+position = Vector2(680, 548)
+
 [node name="PauseScreen" parent="." instance=ExtResource("5_apjyh")]
