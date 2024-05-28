@@ -123,9 +123,6 @@ animations = [{
 properties/0/path = NodePath(".:score")
 properties/0/spawn = true
 properties/0/replication_mode = 2
-properties/1/path = NodePath(".:health")
-properties/1/spawn = true
-properties/1/replication_mode = 2
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jmn3p"]
 radius = 32.0156
@@ -136,7 +133,7 @@ bg_color = Color(0, 0, 0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_274lc"]
 bg_color = Color(0, 0.686275, 0.360784, 1)
 
-[node name="Player" type="CharacterBody2D" groups=["Hit"]]
+[node name="Player" type="CharacterBody2D"]
 collision_layer = 2
 collision_mask = 3
 script = ExtResource("1_7q1sy")
@@ -164,7 +161,6 @@ replication_config = SubResource("SceneReplicationConfig_8jyo0")
 [node name="CollissionPunch" type="CollisionShape2D" parent="Punch"]
 position = Vector2(64, 1)
 shape = SubResource("CircleShape2D_jmn3p")
-disabled = true
 
 [node name="GUI" parent="." instance=ExtResource("4_v6n38")]
 script = ExtResource("5_p42ay")
@@ -177,5 +173,6 @@ offset_right = 54.0
 offset_bottom = -40.0
 theme_override_styles/background = SubResource("StyleBoxFlat_isnqi")
 theme_override_styles/fill = SubResource("StyleBoxFlat_274lc")
+value = 21.21
 
 [connection signal="body_entered" from="Punch" to="." method="_on_punch_body_entered"]

@@ -11,7 +11,7 @@ var gravity = 0
 var acceleration = 300
 var _score = 1
 
-var health = 100:
+@export var health = 100:
 	set(value):
 		health = value
 		health_changed.emit(health)
@@ -23,6 +23,7 @@ var max_health = 100
 @onready var multiplayer_synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var gui: CanvasLayer = $GUI
+@onready var health_bar = $HealthBar #Barra de vida propia, solo sale si no somos auth
 
 @export var score = 1:
 	set(value):
@@ -33,6 +34,7 @@ func _ready() -> void:
 	picked.connect(_on_picked)
 	gui.update_health(health)
 	health_changed.connect(gui.update_health)
+	health_changed.connect(_on_health_changed)
 	animated_sprite.connect("animation_finished", Callable(self, "_on_animation_finished"))
 	gui.hide()
 
@@ -85,6 +87,7 @@ func setup(player_data: Statics.PlayerData):
 	
 	if multiplayer.get_unique_id() == player_data.id:
 		gui.show()
+	health_bar.visible = multiplayer.get_unique_id() != player_data.id
 
 @rpc("authority", "call_local", "reliable")
 func test(name):
@@ -107,6 +110,7 @@ func _on_picked(object: String):
 
 func _on_punch_body_entered(body):
 	if body.is_in_group("hit"):
+		Debug.log("PRINTHOLA")
 		body.take_damage()
 
 func update_animation() -> void:
@@ -120,3 +124,11 @@ func update_animation() -> void:
 func _on_animation_finished(animation_name: String) -> void:
 	if animation_name == "punch":
 		update_animation()  
+
+func _on_health_changed(new_health) -> void:
+	health_bar.value = new_health
+	
+func take_damage():
+	Debug.log("DAÑO_TOMADO")
+		
+
