@@ -61,16 +61,26 @@ func handle_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		update_mouse_position(event.position)
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		handle_shooting()
+		handle_shooting.rpc()
+	else:
+		disable_shotting.rpc()
+	
 	if event.is_action_pressed("test"):
 		handle_test_action()
 
 func update_mouse_position(mouse_position: Vector2) -> void:
 	apuntar.rpc(mouse_position)
-
+	
+	
+@rpc("call_local")
 func handle_shooting() -> void:
+	$Punch/CollissionPunch.disabled = false
 	animated_sprite.play("punch")
 	print("click")
+@rpc("call_local")
+func disable_shotting()->void:
+	$Punch/CollissionPunch.disabled = true
+	
 
 func handle_test_action() -> void:
 	health -=10
@@ -108,9 +118,10 @@ func apuntar(mouse_position: Vector2) -> void:
 func _on_picked(object: String):
 	Debug.log(object)
 
-func _on_punch_body_entered(body):
+#señal
+func _on_punch_body_entered(body): 
 	if body.is_in_group("hit"):
-		Debug.log("PRINTHOLA")
+		Debug.log("SEÑAL")
 		body.take_damage()
 
 func update_animation() -> void:

@@ -1,0 +1,181 @@
+[gd_scene load_steps=24 format=3 uid="uid://8d3ys4aw51lk"]
+
+[ext_resource type="Script" path="res://scenes/player.gd" id="1_7q1sy"]
+[ext_resource type="PackedScene" uid="uid://dskjy6yd4quog" path="res://scenes/bullet.tscn" id="2_pyqhq"]
+[ext_resource type="Texture2D" uid="uid://vne44aqa8tci" path="res://sprite_bases.png" id="3_7rykv"]
+[ext_resource type="PackedScene" uid="uid://dkpmqn4oa3a7n" path="res://ui/gui.tscn" id="4_v6n38"]
+[ext_resource type="Script" path="res://ui/gui.gd" id="5_p42ay"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_67exc"]
+radius = 60.0
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fj4kg"]
+atlas = ExtResource("3_7rykv")
+region = Rect2(1280, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_evg0d"]
+atlas = ExtResource("3_7rykv")
+region = Rect2(320, 320, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_objts"]
+atlas = ExtResource("3_7rykv")
+region = Rect2(640, 320, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4nrhm"]
+atlas = ExtResource("3_7rykv")
+region = Rect2(960, 320, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_1rmgq"]
+atlas = ExtResource("3_7rykv")
+region = Rect2(1280, 320, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qxkte"]
+atlas = ExtResource("3_7rykv")
+region = Rect2(0, 0, 299, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_dw2rj"]
+atlas = ExtResource("3_7rykv")
+region = Rect2(325, 0, 299, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_n3fxf"]
+atlas = ExtResource("3_7rykv")
+region = Rect2(960, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_mu62e"]
+atlas = ExtResource("3_7rykv")
+region = Rect2(1280, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_wkfhv"]
+atlas = ExtResource("3_7rykv")
+region = Rect2(0, 320, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_51kgm"]
+atlas = ExtResource("3_7rykv")
+region = Rect2(640, 0, 320, 320)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_4dj21"]
+atlas = ExtResource("3_7rykv")
+region = Rect2(960, 0, 320, 320)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_k8bkb"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fj4kg")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_evg0d")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_objts")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4nrhm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_1rmgq")
+}, {
+"duration": 1.0,
+"texture": null
+}],
+"loop": true,
+"name": &"defeat",
+"speed": 4.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qxkte")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_dw2rj")
+}],
+"loop": true,
+"name": &"idle",
+"speed": 3.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_n3fxf")
+}, {
+"duration": 1.5,
+"texture": SubResource("AtlasTexture_mu62e")
+}, {
+"duration": 2.0,
+"texture": SubResource("AtlasTexture_wkfhv")
+}],
+"loop": false,
+"name": &"punch",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_51kgm")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_4dj21")
+}],
+"loop": true,
+"name": &"walk",
+"speed": 4.0
+}]
+
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_8jyo0"]
+properties/0/path = NodePath(".:score")
+properties/0/spawn = true
+properties/0/replication_mode = 2
+properties/1/path = NodePath(".:health")
+properties/1/spawn = true
+properties/1/replication_mode = 2
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_jmn3p"]
+radius = 32.0156
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_isnqi"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_274lc"]
+bg_color = Color(0, 0.686275, 0.360784, 1)
+
+[node name="Player" type="CharacterBody2D" groups=["Hit"]]
+collision_layer = 2
+collision_mask = 3
+script = ExtResource("1_7q1sy")
+bullet_scene = ExtResource("2_pyqhq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["hit"]]
+scale = Vector2(0.5, 0.5)
+shape = SubResource("CircleShape2D_67exc")
+
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+rotation = 1.5708
+scale = Vector2(0.5, 0.5)
+sprite_frames = SubResource("SpriteFrames_k8bkb")
+animation = &"idle"
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("res://scenes/bullet.tscn")
+spawn_path = NodePath(".")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_8jyo0")
+
+[node name="Punch" type="Area2D" parent="."]
+
+[node name="CollissionPunch" type="CollisionShape2D" parent="Punch"]
+position = Vector2(64, 1)
+shape = SubResource("CircleShape2D_jmn3p")
+disabled = true
+
+[node name="GUI" parent="." instance=ExtResource("4_v6n38")]
+script = ExtResource("5_p42ay")
+
+[node name="HealthBar" type="ProgressBar" parent="."]
+custom_minimum_size = Vector2(100, 5)
+offset_left = -46.0
+offset_top = -63.0
+offset_right = 54.0
+offset_bottom = -40.0
+theme_override_styles/background = SubResource("StyleBoxFlat_isnqi")
+theme_override_styles/fill = SubResource("StyleBoxFlat_274lc")
+
+[connection signal="body_entered" from="Punch" to="." method="_on_punch_body_entered"]
