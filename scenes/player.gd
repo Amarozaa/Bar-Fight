@@ -3,6 +3,7 @@ extends CharacterBody2D
 
 signal picked(object)
 signal health_changed(value)
+signal PUNCHED(player_id)
 
 
 var speed = 200
@@ -33,14 +34,18 @@ var max_health = 100
 func _ready() -> void:
 	picked.connect(_on_picked)
 	gui.update_health(health)
+	
+	#body_entered.connect(_on_punch_body_entered
 	health_changed.connect(gui.update_health)
 	health_changed.connect(_on_health_changed)
+	#player.punched.connect(_on_player_punched)
 	animated_sprite.connect("animation_finished", Callable(self, "_on_animation_finished"))
 	gui.hide()
 
 func _physics_process(delta: float) -> void:
 	if is_multiplayer_authority():
 		handle_movement(delta)
+	
 	update_animation()
 
 func _input(event: InputEvent) -> void:
@@ -80,14 +85,18 @@ func handle_shooting() -> void:
 @rpc("call_local")
 func disable_shotting()->void:
 	$Punch/CollissionPunch.disabled = true
-	
+
 
 func handle_test_action() -> void:
-	health -=10
+	#health -=10
+	for player in Game.players:
+		if player.id != multiplayer.get_unique_id():
+			PUNCHED.emit(player.id)
 	#test.rpc(Game.get_current_player().name)
 	#var bullet = bullet_scene.instantiate()
 	#multiplayer_spawner.add_child(bullet, true)
 	score += 1
+
 
 func setup(player_data: Statics.PlayerData):
 	name = str(player_data.id)
@@ -120,9 +129,10 @@ func _on_picked(object: String):
 
 #señal
 func _on_punch_body_entered(body): 
-	if body.is_in_group("hit"):
+	if body.is_in_group("HIT") and is_multiplayer_authority():
 		Debug.log("SEÑAL")
 		body.take_damage()
+		handle_test_action()
 
 func update_animation() -> void:
 	if animated_sprite.animation == "punch" and animated_sprite.is_playing():
@@ -138,8 +148,37 @@ func _on_animation_finished(animation_name: String) -> void:
 
 func _on_health_changed(new_health) -> void:
 	health_bar.value = new_health
+	if (health_bar.value == 0):
+		print("waos")
 	
+		switch_game_over.rpc()
+		#falta aqui detectar quien gano,y darle un feedback en la cuestion.
+
+
 func take_damage():
 	Debug.log("DAÑO_TOMADO")
+	
+
+@rpc("call_local")
+func switch_game_over() -> void:
+	var pscene = load("res://GAME_OVER.tscn")
+	get_tree().change_scene_to_packed(pscene)
+
+
+@rpc("any_peer", "call_local")
+func take_damage2(damage) -> void:
+	health -= damage
+	
+
+
+	
+#authority,call remote, relible
+#authority: solo el con autoridad puede llamar.
+
+#any_peer: cualquiera puede llamar.
+#call_local: se llama en ambos
+#call_remote: se llama solo en la otra.
+#authority,call remote, relible
+
 		
 

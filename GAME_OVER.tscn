@@ -1,0 +1,18 @@
+[gd_scene format=3 uid="uid://don0fs7w0s0q2"]
+
+[node name="GAMEOVER" type="Label"]
+offset_left = 147.0
+offset_top = 109.0
+offset_right = 1100.0
+offset_bottom = 440.0
+theme_override_font_sizes/font_size = 166
+text = "GAME OVER"
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 194.0
+offset_top = 255.0
+offset_right = 715.0
+offset_bottom = 360.0
+theme_override_font_sizes/font_size = 76
+text = "BOTTOM TEXT"

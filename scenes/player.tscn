@@ -136,13 +136,13 @@ bg_color = Color(0, 0, 0, 1)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_274lc"]
 bg_color = Color(0, 0.686275, 0.360784, 1)
 
-[node name="Player" type="CharacterBody2D" groups=["Hit"]]
-collision_layer = 2
+[node name="Player" type="CharacterBody2D" groups=["HIT"]]
+collision_layer = 3
 collision_mask = 3
 script = ExtResource("1_7q1sy")
 bullet_scene = ExtResource("2_pyqhq")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["hit"]]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2(0.5, 0.5)
 shape = SubResource("CircleShape2D_67exc")
 
