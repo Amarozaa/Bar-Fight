@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://d0lo4y7w8pvyk"]
+[gd_scene load_steps=3 format=3 uid="uid://d0lo4y7w8pvyk"]
 
 [ext_resource type="Script" path="res://scenes/main_menu.gd" id="1_q0535"]
+[ext_resource type="Texture2D" uid="uid://c386uwbgmb5ik" path="res://keys2.png" id="2_j41h3"]
 
 [node name="MarginContainer" type="MarginContainer"]
 anchors_preset = 15
@@ -27,6 +28,7 @@ layout_mode = 2
 layout_mode = 2
 text = "Drunk Fight"
 horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="Start" type="Button" parent="PanelContainer/Menus/MainMenu"]
 unique_name_in_owner = true
@@ -60,6 +62,14 @@ horizontal_alignment = 1
 
 [node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/Menus/ControlsMenu"]
 layout_mode = 2
+bbcode_enabled = true
+text = "Use the WASD keys to move your character and use the mause to point forward. Use the left button in the mouse to punch enemies.
+"
+fit_content = true
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/Menus/ControlsMenu"]
+layout_mode = 2
+texture = ExtResource("2_j41h3")
 
 [node name="ControlsToMenu" type="Button" parent="PanelContainer/Menus/ControlsMenu"]
 unique_name_in_owner = true
