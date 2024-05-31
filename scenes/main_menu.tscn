@@ -1,0 +1,103 @@
+[gd_scene load_steps=3 format=3 uid="uid://d0lo4y7w8pvyk"]
+
+[ext_resource type="Script" path="res://scenes/main_menu.gd" id="1_q0535"]
+[ext_resource type="Texture2D" uid="uid://c386uwbgmb5ik" path="res://keys2.png" id="2_j41h3"]
+
+[node name="MarginContainer" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_q0535")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(300, 200)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+
+[node name="Menus" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+
+[node name="MainMenu" type="VBoxContainer" parent="PanelContainer/Menus"]
+unique_name_in_owner = true
+layout_mode = 2
+
+[node name="Title" type="Label" parent="PanelContainer/Menus/MainMenu"]
+layout_mode = 2
+text = "Drunk Fight"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Start" type="Button" parent="PanelContainer/Menus/MainMenu"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Start Game"
+
+[node name="Controls" type="Button" parent="PanelContainer/Menus/MainMenu"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Controls"
+
+[node name="Credits" type="Button" parent="PanelContainer/Menus/MainMenu"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Credits"
+
+[node name="Exit" type="Button" parent="PanelContainer/Menus/MainMenu"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Exit Game"
+
+[node name="ControlsMenu" type="VBoxContainer" parent="PanelContainer/Menus"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="Controls" type="Label" parent="PanelContainer/Menus/ControlsMenu"]
+layout_mode = 2
+text = "Controls"
+horizontal_alignment = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="PanelContainer/Menus/ControlsMenu"]
+layout_mode = 2
+bbcode_enabled = true
+text = "Use the WASD keys to move your character and use the mause to point forward. Use the left button in the mouse to punch enemies.
+"
+fit_content = true
+
+[node name="TextureRect" type="TextureRect" parent="PanelContainer/Menus/ControlsMenu"]
+layout_mode = 2
+texture = ExtResource("2_j41h3")
+
+[node name="ControlsToMenu" type="Button" parent="PanelContainer/Menus/ControlsMenu"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Back"
+
+[node name="CreditsMenu" type="VBoxContainer" parent="PanelContainer/Menus"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="Credits" type="Label" parent="PanelContainer/Menus/CreditsMenu"]
+layout_mode = 2
+text = "Credits"
+horizontal_alignment = 1
+
+[node name="Text" type="Label" parent="PanelContainer/Menus/CreditsMenu"]
+layout_mode = 2
+text = "This game is bought to you by Red Capibara. 
+Meet the crew:
+- Esteban Cinfuentes
+- Tomás Guzmán
+- José Vásquez
+- Amaro Zurita
+
+Sprites:"
+
+[node name="CreditsToMenu" type="Button" parent="PanelContainer/Menus/CreditsMenu"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Back"
