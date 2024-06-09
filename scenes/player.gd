@@ -4,6 +4,7 @@ extends CharacterBody2D
 signal picked(object)
 signal health_changed(value)
 signal PUNCHED(player_id)
+signal drunkness_changed(value)
 
 
 var speed = 200
@@ -18,6 +19,12 @@ var _score = 1
 		health_changed.emit(health)
 var max_health = 100
 
+@export var drunk = 0:
+	set(value):
+		drunk = value
+		drunkness_changed.emit(drunk)
+var max_drunk = 100
+
 
 @export var bullet_scene: PackedScene
 @onready var multiplayer_spawner: MultiplayerSpawner = $MultiplayerSpawner
@@ -25,6 +32,7 @@ var max_health = 100
 @onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
 @onready var gui: CanvasLayer = $GUI
 @onready var health_bar = $HealthBar #Barra de vida propia, solo sale si no somos auth
+@onready var drunk_bar = $DrunkBar
 
 @export var score = 1:
 	set(value):
@@ -34,10 +42,13 @@ var max_health = 100
 func _ready() -> void:
 	picked.connect(_on_picked)
 	gui.update_health(health)
-	
+	gui.update_drunkness(drunk)
 	#body_entered.connect(_on_punch_body_entered
 	health_changed.connect(gui.update_health)
 	health_changed.connect(_on_health_changed)
+	
+	drunkness_changed.connect(gui.update_drunkness)
+	drunkness_changed.connect(_on_drunk_changed)
 	#player.punched.connect(_on_player_punched)
 	animated_sprite.connect("animation_finished", Callable(self, "_on_animation_finished"))
 	gui.hide()
@@ -72,6 +83,9 @@ func handle_input(event: InputEvent) -> void:
 	
 	if event.is_action_pressed("test"):
 		handle_test_action()
+	if event.is_action_pressed("drunk_test"):
+		drunk +=10
+	
 
 func update_mouse_position(mouse_position: Vector2) -> void:
 	apuntar.rpc(mouse_position)
@@ -96,6 +110,8 @@ func handle_test_action() -> void:
 	#var bullet = bullet_scene.instantiate()
 	#multiplayer_spawner.add_child(bullet, true)
 	score += 1
+	
+
 
 
 func setup(player_data: Statics.PlayerData):
@@ -107,6 +123,7 @@ func setup(player_data: Statics.PlayerData):
 	if multiplayer.get_unique_id() == player_data.id:
 		gui.show()
 	health_bar.visible = multiplayer.get_unique_id() != player_data.id
+	drunk_bar.visible = multiplayer.get_unique_id() != player_data.id
 
 @rpc("authority", "call_local", "reliable")
 func test(name):
@@ -168,6 +185,11 @@ func switch_game_over() -> void:
 @rpc("any_peer", "call_local")
 func take_damage2(damage) -> void:
 	health -= damage
+	
+func _on_drunk_changed(new_drunk) -> void:
+	drunk_bar.value = new_drunk
+	
+	
 	
 
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://8d3ys4aw51lk"]
+[gd_scene load_steps=25 format=3 uid="uid://8d3ys4aw51lk"]
 
 [ext_resource type="Script" path="res://scenes/player.gd" id="1_7q1sy"]
 [ext_resource type="PackedScene" uid="uid://dskjy6yd4quog" path="res://scenes/bullet.tscn" id="2_pyqhq"]
@@ -126,6 +126,9 @@ properties/0/replication_mode = 2
 properties/1/path = NodePath(".:health")
 properties/1/spawn = true
 properties/1/replication_mode = 2
+properties/2/path = NodePath(".:drunk")
+properties/2/spawn = true
+properties/2/replication_mode = 2
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_jmn3p"]
 radius = 32.0156
@@ -135,6 +138,9 @@ bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_274lc"]
 bg_color = Color(0, 0.686275, 0.360784, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0o62o"]
+bg_color = Color(0.93264, 0.125013, 1, 1)
 
 [node name="Player" type="CharacterBody2D" groups=["HIT"]]
 collision_layer = 3
@@ -177,5 +183,14 @@ offset_right = 54.0
 offset_bottom = -40.0
 theme_override_styles/background = SubResource("StyleBoxFlat_isnqi")
 theme_override_styles/fill = SubResource("StyleBoxFlat_274lc")
+
+[node name="DrunkBar" type="ProgressBar" parent="."]
+custom_minimum_size = Vector2(100, 5)
+offset_left = -46.0
+offset_top = -93.0
+offset_right = 54.0
+offset_bottom = -70.0
+theme_override_styles/background = SubResource("StyleBoxFlat_isnqi")
+theme_override_styles/fill = SubResource("StyleBoxFlat_0o62o")
 
 [connection signal="body_entered" from="Punch" to="." method="_on_punch_body_entered"]

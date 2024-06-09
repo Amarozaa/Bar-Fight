@@ -1,10 +1,16 @@
-[gd_scene load_steps=3 format=3 uid="uid://dkpmqn4oa3a7n"]
+[gd_scene load_steps=5 format=3 uid="uid://dkpmqn4oa3a7n"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ytmmc"]
 bg_color = Color(0, 0, 0, 1)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_du7hu"]
 bg_color = Color(0, 0.686275, 0.360784, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_iqrb4"]
+bg_color = Color(0, 0, 0, 1)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kuj8e"]
+bg_color = Color(0.982582, 0.000459552, 0.917726, 1)
 
 [node name="GUI" type="CanvasLayer"]
 
@@ -17,4 +23,17 @@ custom_minimum_size = Vector2(0, 40)
 layout_mode = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_ytmmc")
 theme_override_styles/fill = SubResource("StyleBoxFlat_du7hu")
+value = 21.21
+
+[node name="MarginContainer2" type="MarginContainer" parent="."]
+offset_left = -7.0
+offset_top = 55.0
+offset_right = 309.0
+offset_bottom = 135.0
+
+[node name="DrunkessBar" type="ProgressBar" parent="MarginContainer2"]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+theme_override_styles/background = SubResource("StyleBoxFlat_iqrb4")
+theme_override_styles/fill = SubResource("StyleBoxFlat_kuj8e")
 value = 21.21
