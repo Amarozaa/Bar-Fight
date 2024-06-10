@@ -25,6 +25,8 @@ var max_health = 100
 		drunkness_changed.emit(drunk)
 var max_drunk = 100
 
+var min_drunk = 0
+
 
 @export var bullet_scene: PackedScene
 @onready var multiplayer_spawner: MultiplayerSpawner = $MultiplayerSpawner
@@ -55,6 +57,8 @@ func _ready() -> void:
 
 func _physics_process(delta: float) -> void:
 	if is_multiplayer_authority():
+		if drunk > min_drunk:
+			drunk -=0.1
 		handle_movement(delta)
 	
 	update_animation()
@@ -142,6 +146,7 @@ func apuntar(mouse_position: Vector2) -> void:
 	look_at(mouse_position)
 
 func _on_picked(object: String):
+	drunk +=10
 	Debug.log(object)
 
 #señal
@@ -188,6 +193,7 @@ func take_damage2(damage) -> void:
 	
 func _on_drunk_changed(new_drunk) -> void:
 	drunk_bar.value = new_drunk
+	
 	
 	
 	
