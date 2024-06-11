@@ -13,6 +13,10 @@ var gravity = 0
 var acceleration = 300
 var _score = 1
 
+var top=50
+
+
+
 @export var health = 100:
 	set(value):
 		health = value
@@ -26,6 +30,9 @@ var max_health = 100
 var max_drunk = 100
 
 var min_drunk = 0
+
+var increasing_blur = false
+var virtual_blur = 0.0
 
 
 @export var bullet_scene: PackedScene
@@ -59,7 +66,25 @@ func _physics_process(delta: float) -> void:
 	if is_multiplayer_authority():
 		if drunk > min_drunk:
 			drunk -=0.1
+		#var main = get_node("/root/Main")
+		
 		handle_movement(delta)
+		
+		if increasing_blur:
+			#print("miau:3")
+			var main = get_node("/root/Main")
+			if main:
+				var current_blur = main.get_blur()
+				var target_blur = 1.0  # Valor máximo de blur deseado
+				virtual_blur += 0.2 * delta
+				virtual_blur = min(virtual_blur, target_blur)
+				
+				main.set_blur(virtual_blur)
+				
+				# Detener el aumento del blur cuando se alcanza el valor máximo
+				if virtual_blur >= target_blur:
+					increasing_blur = false
+					virtual_blur = 0.0  # Restablecer el valor de virtual_blur
 	
 	update_animation()
 
@@ -89,6 +114,14 @@ func handle_input(event: InputEvent) -> void:
 		handle_test_action()
 	if event.is_action_pressed("drunk_test"):
 		drunk +=10
+	if event.is_action_pressed("ui_select"):
+		var main = get_node("/root/Main")
+		if main:
+			print("pasamos a main")
+			increasing_blur = true
+			#for i in range(250):
+			#	virtual_blur = virtual_blur + 0.01
+			#	main.set_blur(virtual_blur)  # Cambia el valor de blur a 4.0
 	
 
 func update_mouse_position(mouse_position: Vector2) -> void:
