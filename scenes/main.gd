@@ -10,6 +10,7 @@ extends Node2D
 
 var offset = 0 
 
+
 var shader_material: ShaderMaterial
 @onready var texture_rect = $CanvasLayer/TextureRect
 
@@ -18,6 +19,7 @@ var shader_material: ShaderMaterial
 
 
 func _ready() -> void:
+	Game.players.sort_custom(func(a,b): return a.id < b.id)
 	for player_data in Game.players:
 		var player = player_scene.instantiate()
 		player.global_position = Vector2(120+offset,30)
@@ -43,9 +45,17 @@ func get_blur() -> float:
 func _on_player_punched(player_id: int) -> void:
 	punch_player.rpc_id(1, player_id)
 	
+var attacker_dmg	
 @rpc("any_peer", "call_local")
 func punch_player(player_id: int)-> void:
 	for player in players.get_children():
+		#if player.get_multiplayer_authority() != player_id:
+			#attacker_dmg = player.attack
 		if player.get_multiplayer_authority() == player_id:
-			player.take_damage2.rpc_id(player_id, 10)
+			for w in players.get_children():
+				if w.get_multiplayer_authority() != player_id:
+					attacker_dmg = w.attack
+			
+		
+			player.take_damage2.rpc_id(player_id, attacker_dmg)
 		

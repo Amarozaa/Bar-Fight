@@ -1,0 +1,52 @@
+[gd_scene load_steps=9 format=3 uid="uid://b5hufqs7sbm01"]
+
+[ext_resource type="Script" path="res://scenes/main.gd" id="1_ysfbh"]
+[ext_resource type="PackedScene" uid="uid://8d3ys4aw51lk" path="res://scenes/player.tscn" id="2_jyiyy"]
+[ext_resource type="Texture2D" uid="uid://c2v48v5ngsg25" path="res://tavernfight.jpg" id="3_ryb57"]
+[ext_resource type="PackedScene" uid="uid://co737c1nwsaoi" path="res://beer.tscn" id="4_0qm31"]
+[ext_resource type="PackedScene" uid="uid://dmdpymvhxj3qk" path="res://pause_screen.tscn" id="5_apjyh"]
+[ext_resource type="Shader" path="res://scenes/main.gdshader" id="6_ueeg0"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_pcm5m"]
+shader = ExtResource("6_ueeg0")
+shader_parameter/blur = 2.0
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_8q1jb"]
+
+[node name="Main" type="Node2D"]
+script = ExtResource("1_ysfbh")
+player_scene = ExtResource("2_jyiyy")
+
+[node name="Players" type="Node2D" parent="."]
+
+[node name="SpawnPoints" type="Node2D" parent="."]
+
+[node name="PlayerA" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(-62, 30)
+
+[node name="PlayerB" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(140, 29)
+
+[node name="Pixelartbar" type="Sprite2D" parent="."]
+show_behind_parent = true
+position = Vector2(573.5, 482)
+scale = Vector2(0.508889, 0.493333)
+texture = ExtResource("3_ryb57")
+
+[node name="Beer" parent="." instance=ExtResource("4_0qm31")]
+position = Vector2(444, 542)
+
+[node name="Beer2" parent="." instance=ExtResource("4_0qm31")]
+position = Vector2(680, 548)
+
+[node name="PauseScreen" parent="." instance=ExtResource("5_apjyh")]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+material = SubResource("ShaderMaterial_pcm5m")
+offset_left = -10.0
+offset_top = -1.0
+offset_right = 1143.0
+offset_bottom = 940.0
+texture = SubResource("CanvasTexture_8q1jb")

@@ -1,77 +1,83 @@
 class_name Player
 extends CharacterBody2D
 
+# Signals
 signal picked(object)
 signal health_changed(value)
 signal PUNCHED(player_id)
 signal drunkness_changed(value)
+signal attack_changed(value)
 
-
+# Variables
 var speed = 200
 var jump_speed = 300
 var gravity = 0
 var acceleration = 300
 var _score = 1
+var top = 50
 
-var top=50
+var max_health = 100
+var min_drunk = 0
+var max_drunk = 100
+var increasing_blur = false
+var virtual_blur = 0.0
 
-
-
+@export var attack = 10:
+	set(value):
+		attack = value
+		attack_changed.emit(attack)
+# Exported Variables with setters
 @export var health = 100:
 	set(value):
 		health = value
 		health_changed.emit(health)
-var max_health = 100
 
 @export var drunk = 0:
 	set(value):
 		drunk = value
 		drunkness_changed.emit(drunk)
-var max_drunk = 100
-
-var min_drunk = 0
-
-var increasing_blur = false
-var virtual_blur = 0.0
-
-
-@export var bullet_scene: PackedScene
-@onready var multiplayer_spawner: MultiplayerSpawner = $MultiplayerSpawner
-@onready var multiplayer_synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
-@onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
-@onready var gui: CanvasLayer = $GUI
-@onready var health_bar = $HealthBar #Barra de vida propia, solo sale si no somos auth
-@onready var drunk_bar = $DrunkBar
 
 @export var score = 1:
 	set(value):
 		_score = value
 		Debug.log("Player %s score %d" % [name, _score])
+		
 
+
+@export var bullet_scene: PackedScene
+
+# Onready Variables
+@onready var multiplayer_spawner: MultiplayerSpawner = $MultiplayerSpawner
+@onready var multiplayer_synchronizer: MultiplayerSynchronizer = $MultiplayerSynchronizer
+@onready var animated_sprite: AnimatedSprite2D = $AnimatedSprite2D
+@onready var gui: CanvasLayer = $GUI
+@onready var health_bar = $HealthBar # Barra de vida propia, solo sale si no somos auth
+@onready var drunk_bar = $DrunkBar
+
+# Functions
 func _ready() -> void:
+	#señal conecta con metodo
 	picked.connect(_on_picked)
 	gui.update_health(health)
 	gui.update_drunkness(drunk)
-	#body_entered.connect(_on_punch_body_entered
 	health_changed.connect(gui.update_health)
 	health_changed.connect(_on_health_changed)
 	
+	attack_changed.connect(_on_atack_changed)
+	
 	drunkness_changed.connect(gui.update_drunkness)
 	drunkness_changed.connect(_on_drunk_changed)
-	#player.punched.connect(_on_player_punched)
 	animated_sprite.connect("animation_finished", Callable(self, "_on_animation_finished"))
 	gui.hide()
 
 func _physics_process(delta: float) -> void:
 	if is_multiplayer_authority():
 		if drunk > min_drunk:
-			drunk -=0.1
-		#var main = get_node("/root/Main")
+			drunk -= 0.1
 		
 		handle_movement(delta)
 		
 		if increasing_blur:
-			#print("miau:3")
 			var main = get_node("/root/Main")
 			if main:
 				var current_blur = main.get_blur()
@@ -81,7 +87,6 @@ func _physics_process(delta: float) -> void:
 				
 				main.set_blur(virtual_blur)
 				
-				# Detener el aumento del blur cuando se alcanza el valor máximo
 				if virtual_blur >= target_blur:
 					increasing_blur = false
 					virtual_blur = 0.0  # Restablecer el valor de virtual_blur
@@ -108,48 +113,37 @@ func handle_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		handle_shooting.rpc()
 	else:
-		disable_shotting.rpc()
+		disable_shooting.rpc()
 	
 	if event.is_action_pressed("test"):
 		handle_test_action()
 	if event.is_action_pressed("drunk_test"):
-		drunk +=10
+		drunk += 10
 	if event.is_action_pressed("ui_select"):
 		var main = get_node("/root/Main")
 		if main:
 			print("pasamos a main")
-			increasing_blur = true
-			#for i in range(250):
-			#	virtual_blur = virtual_blur + 0.01
-			#	main.set_blur(virtual_blur)  # Cambia el valor de blur a 4.0
-	
+			attack += 10
+			#increasing_blur = true
 
 func update_mouse_position(mouse_position: Vector2) -> void:
 	apuntar.rpc(mouse_position)
-	
-	
+
 @rpc("call_local")
 func handle_shooting() -> void:
 	$Punch/CollissionPunch.disabled = false
 	animated_sprite.play("punch")
 	print("click")
+
 @rpc("call_local")
-func disable_shotting()->void:
+func disable_shooting() -> void:
 	$Punch/CollissionPunch.disabled = true
 
-
 func handle_test_action() -> void:
-	#health -=10
 	for player in Game.players:
 		if player.id != multiplayer.get_unique_id():
 			PUNCHED.emit(player.id)
-	#test.rpc(Game.get_current_player().name)
-	#var bullet = bullet_scene.instantiate()
-	#multiplayer_spawner.add_child(bullet, true)
 	score += 1
-	
-
-
 
 func setup(player_data: Statics.PlayerData):
 	name = str(player_data.id)
@@ -179,10 +173,11 @@ func apuntar(mouse_position: Vector2) -> void:
 	look_at(mouse_position)
 
 func _on_picked(object: String):
-	drunk +=10
+	drunk += 10
+	attack += 10
+	Debug.log(attack)
 	Debug.log(object)
 
-#señal
 func _on_punch_body_entered(body): 
 	if body.is_in_group("HIT") and is_multiplayer_authority():
 		Debug.log("SEÑAL")
@@ -199,40 +194,36 @@ func update_animation() -> void:
 
 func _on_animation_finished(animation_name: String) -> void:
 	if animation_name == "punch":
-		update_animation()  
+		update_animation()
 
 func _on_health_changed(new_health) -> void:
 	health_bar.value = new_health
-	if (health_bar.value == 0):
+	if health_bar.value == 0:
 		print("waos")
-	
 		switch_game_over.rpc()
-		#falta aqui detectar quien gano,y darle un feedback en la cuestion.
-
 
 func take_damage():
 	Debug.log("DAÑO_TOMADO")
-	
 
 @rpc("call_local")
 func switch_game_over() -> void:
 	var pscene = load("res://GAME_OVER.tscn")
 	get_tree().change_scene_to_packed(pscene)
 
-
 @rpc("any_peer", "call_local")
 func take_damage2(damage) -> void:
 	health -= damage
-	
+
 func _on_drunk_changed(new_drunk) -> void:
 	drunk_bar.value = new_drunk
 	
-	
-	
+func _on_atack_changed(new_attack) -> void:
+	#attack = new_attack
+	Debug.log(new_attack)
 	
 
 
-	
+
 #authority,call remote, relible
 #authority: solo el con autoridad puede llamar.
 
@@ -240,6 +231,3 @@ func _on_drunk_changed(new_drunk) -> void:
 #call_local: se llama en ambos
 #call_remote: se llama solo en la otra.
 #authority,call remote, relible
-
-		
-
