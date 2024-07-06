@@ -20,7 +20,13 @@ var max_health = 100
 var min_drunk = 0
 var max_drunk = 100
 var increasing_blur = false
+var increasing_dist = false
 var virtual_blur = 0.0
+var virtual_dist = 0.0
+
+
+
+
 
 @export var attack = 10:
 	set(value):
@@ -54,6 +60,8 @@ var virtual_blur = 0.0
 @onready var health_bar = $HealthBar # Barra de vida propia, solo sale si no somos auth
 @onready var drunk_bar = $DrunkBar
 
+@onready var animated_sprite_2d = $AnimatedSprite2D
+
 # Functions
 func _ready() -> void:
 	#señal conecta con metodo
@@ -77,6 +85,30 @@ func _physics_process(delta: float) -> void:
 		
 		handle_movement(delta)
 		
+		if increasing_dist:
+			var main = get_node("/root/Main")
+			if main:
+				print('aumentamos int')
+				var current_dist = main.get_inte()
+				
+				print(current_dist)
+				#main.set_inte(0.1)
+				print(main.get_inte())
+				print('terminamos int')
+				
+				#increasing_dist = false
+				var target_dist = 0.1
+				virtual_dist +=  0.005 * delta
+				virtual_dist = min(virtual_dist, target_dist)
+
+				main.set_inte(virtual_dist)
+
+				if virtual_dist >= target_dist:
+					increasing_dist = false
+					print(main.get_inte())
+					print('dejamos de aumentar int')
+					virtual_dist = 0.0
+
 		if increasing_blur:
 			var main = get_node("/root/Main")
 			if main:
@@ -124,7 +156,13 @@ func handle_input(event: InputEvent) -> void:
 		if main:
 			print("pasamos a main")
 			attack += 10
+			#main.set_inte(0.1)
 			#increasing_blur = true
+			#animated_sprite_2d.set_shader_parameter("param_name", 0.0)
+			
+
+			
+			increasing_dist = true
 
 func update_mouse_position(mouse_position: Vector2) -> void:
 	apuntar.rpc(mouse_position)
@@ -174,10 +212,21 @@ func apuntar(mouse_position: Vector2) -> void:
 
 func _on_picked(object: String):
 	drunk += 10
-	attack += 10
-	Debug.log(attack)
 	Debug.log(object)
-
+	if object == "Beer":
+		attack += 10
+		change_red_buff.rpc()
+		
+		start_attack_timer()
+		
+	Debug.log(attack)
+	
+@rpc("call_local")
+func change_red_buff() -> void:
+	var is_buf_red = $AnimatedSprite2D.get_use_parent_material()
+	var inverted_buf_red = !is_buf_red
+	$AnimatedSprite2D.set_use_parent_material(inverted_buf_red)
+	
 func _on_punch_body_entered(body): 
 	if body.is_in_group("HIT") and is_multiplayer_authority():
 		Debug.log("SEÑAL")
@@ -220,6 +269,12 @@ func _on_drunk_changed(new_drunk) -> void:
 func _on_atack_changed(new_attack) -> void:
 	#attack = new_attack
 	Debug.log(new_attack)
+	
+func start_attack_timer() -> void:
+	await get_tree().create_timer(15.0).timeout
+	Debug.log("15 segundos pasados, buffo terminado")
+	attack -= 10
+	
 	
 
 

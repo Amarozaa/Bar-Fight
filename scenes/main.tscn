@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://b5hufqs7sbm01"]
+[gd_scene load_steps=12 format=3 uid="uid://b5hufqs7sbm01"]
 
 [ext_resource type="Script" path="res://scenes/main.gd" id="1_ysfbh"]
 [ext_resource type="PackedScene" uid="uid://8d3ys4aw51lk" path="res://scenes/player.tscn" id="2_jyiyy"]
@@ -6,12 +6,22 @@
 [ext_resource type="PackedScene" uid="uid://co737c1nwsaoi" path="res://beer.tscn" id="4_0qm31"]
 [ext_resource type="PackedScene" uid="uid://dmdpymvhxj3qk" path="res://pause_screen.tscn" id="5_apjyh"]
 [ext_resource type="Shader" path="res://scenes/main.gdshader" id="6_ueeg0"]
+[ext_resource type="Shader" path="res://scenes/DisSh.gdshader" id="7_uhrh3"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_pcm5m"]
 shader = ExtResource("6_ueeg0")
 shader_parameter/blur = 2.0
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_8q1jb"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ftmr3"]
+shader = ExtResource("7_uhrh3")
+shader_parameter/wave_count = 10.0
+shader_parameter/intensity = 0.14
+shader_parameter/max_speed = 8.0
+shader_parameter/rainbow_effect = 0.0
+
+[sub_resource type="CanvasTexture" id="CanvasTexture_bibvu"]
 
 [node name="Main" type="Node2D"]
 script = ExtResource("1_ysfbh")
@@ -26,6 +36,9 @@ position = Vector2(-62, 30)
 
 [node name="PlayerB" type="Marker2D" parent="SpawnPoints"]
 position = Vector2(140, 29)
+
+[node name="ItemA" type="Marker2D" parent="SpawnPoints"]
+position = Vector2(288, 547)
 
 [node name="Pixelartbar" type="Sprite2D" parent="."]
 show_behind_parent = true
@@ -50,3 +63,13 @@ offset_top = -1.0
 offset_right = 1143.0
 offset_bottom = 940.0
 texture = SubResource("CanvasTexture_8q1jb")
+
+[node name="DISTORSION" type="CanvasLayer" parent="."]
+
+[node name="TextureRect" type="TextureRect" parent="DISTORSION"]
+material = SubResource("ShaderMaterial_ftmr3")
+offset_left = -10.0
+offset_top = -1.0
+offset_right = 1143.0
+offset_bottom = 940.0
+texture = SubResource("CanvasTexture_bibvu")

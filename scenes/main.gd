@@ -7,12 +7,25 @@ extends Node2D
 
 @onready var player_a = $SpawnPoints/PlayerA
 @onready var player_b = $SpawnPoints/PlayerB
+@onready var item_a = $SpawnPoints/ItemA
+
+
+
+
 
 var offset = 0 
 
+var items_offset = 0
+
 
 var shader_material: ShaderMaterial
-@onready var texture_rect = $CanvasLayer/TextureRect
+var distorsion_mat: ShaderMaterial
+@onready var texture_rect = $CanvasLayer/TextureRect #blur
+@onready var texture_dist = $DISTORSION/TextureRect  #distorsion
+
+
+var objeto_scene = preload("res://beer.tscn")
+
 
 
 
@@ -23,16 +36,35 @@ func _ready() -> void:
 	for player_data in Game.players:
 		var player = player_scene.instantiate()
 		player.global_position = Vector2(120+offset,30)
+		
 		shader_material = texture_rect.material
+		distorsion_mat = texture_dist.material
 		if shader_material is ShaderMaterial:
 			print("Shader encontrado")
+		if distorsion_mat is ShaderMaterial:
+			print("Distorsion encontrada ")
 		offset = offset + 200
 		set_blur(0)
+		set_inte(0)
 		players.add_child(player)
 		player.setup(player_data)
 		
 		player.PUNCHED.connect(_on_player_punched)
 		
+	#while true:
+			#await get_tree().create_timer(5.0).timeout
+			#var objeto_instance = objeto_scene.instantiate()
+			#objeto_instance.position = item_a.position
+			#objeto_instance.name = "Beer"
+			
+		
+			#add_child(objeto_instance)
+			#Debug.log('objeto annadido')	
+			
+	
+		
+
+
 func set_blur(value: float):
 	if shader_material:
 		shader_material.set_shader_parameter("blur",value)
@@ -42,6 +74,16 @@ func get_blur() -> float:
 		return shader_material.get_shader_parameter("blur")
 	return 0.0
 	
+func set_inte(value: float):
+	if distorsion_mat:
+		distorsion_mat.set_shader_parameter("intensity",value)
+
+func get_inte() -> float:
+	if distorsion_mat:
+		return distorsion_mat.get_shader_parameter("intensity")
+	return 0.0
+	
+
 func _on_player_punched(player_id: int) -> void:
 	punch_player.rpc_id(1, player_id)
 	

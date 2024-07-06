@@ -1,5 +1,6 @@
-[gd_scene load_steps=25 format=3 uid="uid://8d3ys4aw51lk"]
+[gd_scene load_steps=27 format=3 uid="uid://8d3ys4aw51lk"]
 
+[ext_resource type="Shader" path="res://scenes/glowred.gdshader" id="1_3m4gb"]
 [ext_resource type="Script" path="res://scenes/player.gd" id="1_7q1sy"]
 [ext_resource type="PackedScene" uid="uid://dskjy6yd4quog" path="res://scenes/bullet.tscn" id="2_pyqhq"]
 [ext_resource type="Texture2D" uid="uid://vne44aqa8tci" path="res://sprite_bases.png" id="3_7rykv"]
@@ -8,6 +9,13 @@
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_67exc"]
 radius = 60.0
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_cvppe"]
+shader = ExtResource("1_3m4gb")
+shader_parameter/outline_color = Vector4(1, 0, 0, 1)
+shader_parameter/outline_thickness = 3.0
+shader_parameter/glow_color = Vector4(1, 0, 0, 1)
+shader_parameter/glow_intensity = 0.806
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_fj4kg"]
 atlas = ExtResource("3_7rykv")
@@ -156,6 +164,8 @@ scale = Vector2(0.5, 0.5)
 shape = SubResource("CircleShape2D_67exc")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+material = SubResource("ShaderMaterial_cvppe")
+use_parent_material = true
 rotation = 1.5708
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_k8bkb")
