@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://co737c1nwsaoi"]
 
 [ext_resource type="Script" path="res://Beer.gd" id="1_e3xot"]
-[ext_resource type="Texture2D" uid="uid://b5csw3yh74rxm" path="res://Beer.png" id="2_84wk7"]
+[ext_resource type="Texture2D" uid="uid://diw4l5khdv3or" path="res://Assets/NewBeer.png" id="2_ng5d5"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_davds"]
 size = Vector2(81, 176)
@@ -13,7 +13,9 @@ script = ExtResource("1_e3xot")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture_filter = 1
-texture = ExtResource("2_84wk7")
+position = Vector2(0, -1)
+scale = Vector2(0.382813, 0.382813)
+texture = ExtResource("2_ng5d5")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 position = Vector2(-0.5, 59)

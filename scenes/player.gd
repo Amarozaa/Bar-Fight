@@ -21,33 +21,37 @@ var min_drunk = 0
 var max_drunk = 100
 var increasing_blur = false
 var increasing_dist = false
+var decreasing_dist = false
 var virtual_blur = 0.0
-var virtual_dist = 0.0
+
+var virtual_dist = 0.000001
+
+
 
 
 
 
 
 @export var attack = 10:
-	set(value):
-		attack = value
-		attack_changed.emit(attack)
+    set(value):
+        attack = value
+        attack_changed.emit(attack)
 # Exported Variables with setters
 @export var health = 100:
-	set(value):
-		health = value
-		health_changed.emit(health)
+    set(value):
+        health = value
+        health_changed.emit(health)
 
 @export var drunk = 0:
-	set(value):
-		drunk = value
-		drunkness_changed.emit(drunk)
+    set(value):
+        drunk = value
+        drunkness_changed.emit(drunk)
 
 @export var score = 1:
-	set(value):
-		_score = value
-		Debug.log("Player %s score %d" % [name, _score])
-		
+    set(value):
+        _score = value
+        Debug.log("Player %s score %d" % [name, _score])
+        
 
 
 @export var bullet_scene: PackedScene
@@ -62,220 +66,275 @@ var virtual_dist = 0.0
 
 @onready var animated_sprite_2d = $AnimatedSprite2D
 
+var bandera = true
+
 # Functions
 func _ready() -> void:
-	#señal conecta con metodo
-	picked.connect(_on_picked)
-	gui.update_health(health)
-	gui.update_drunkness(drunk)
-	health_changed.connect(gui.update_health)
-	health_changed.connect(_on_health_changed)
-	
-	attack_changed.connect(_on_atack_changed)
-	
-	drunkness_changed.connect(gui.update_drunkness)
-	drunkness_changed.connect(_on_drunk_changed)
-	animated_sprite.connect("animation_finished", Callable(self, "_on_animation_finished"))
-	gui.hide()
+    #señal conecta con metodo
+    picked.connect(_on_picked)
+    gui.update_health(health)
+    gui.update_drunkness(drunk)
+    health_changed.connect(gui.update_health)
+    health_changed.connect(_on_health_changed)
+    
+    attack_changed.connect(_on_atack_changed)
+    
+    drunkness_changed.connect(gui.update_drunkness)
+    drunkness_changed.connect(_on_drunk_changed)
+    animated_sprite.connect("animation_finished", Callable(self, "_on_animation_finished"))
+    gui.hide()
 
 func _physics_process(delta: float) -> void:
-	if is_multiplayer_authority():
-		if drunk > min_drunk:
-			drunk -= 0.1
-		
-		handle_movement(delta)
-		
-		if increasing_dist:
-			var main = get_node("/root/Main")
-			if main:
-				print('aumentamos int')
-				var current_dist = main.get_inte()
-				
-				print(current_dist)
-				#main.set_inte(0.1)
-				print(main.get_inte())
-				print('terminamos int')
-				
-				#increasing_dist = false
-				var target_dist = 0.1
-				virtual_dist +=  0.005 * delta
-				virtual_dist = min(virtual_dist, target_dist)
+    if is_multiplayer_authority():
+        if drunk > min_drunk:
+            if drunk > 100:
+                print('pasaste el maximo, castigado')
+                health -= 20
+                drunk = 100
+            
+            #reglas de proporciones:
+            # si barra drunk en 20%, distorsion deberia estar en 0.1
+            # si esta en 40%, --- en 0.2
+            # 100% --- 0.5
+            
+            
+        
+            var decremento_drunk = 0.03 #velocidad ala que aumenta e
+            drunk -= decremento_drunk
+            #gatito se calcula como la distorsion 
+            var gatito = 0.005 * drunk
+            var main = get_node("/root/Main")
+            main.set_inte(gatito)
+            
+            #proporcion a la cual debemos de disminuir gaitto 
+            var proporcion = 0.0005 / decremento_drunk
+            var decremento_gatito = proporcion * decremento_drunk
+            if bandera:
+                print(decremento_gatito)
+                bandera = false
+            gatito -= decremento_gatito
+            #gatito -=  0.0005
+            
+            if drunk <= 0:
+                print('fin')
+             
+                print(main.get_inte())
+                #en caso de que quede negativo lo dejamos en 0 como deberia :3
+                main.set_inte(0)
+                print(main.get_inte())
+                
+            
+            
+            
+        
+        handle_movement(delta)
+        
+        if increasing_dist:
+            var main = get_node("/root/Main")
+            if main:
+                print('disminuyendo  int')
+                var current_dist = main.get_inte()
+                
+                print(current_dist)
 
-				main.set_inte(virtual_dist)
+                
+                #increasing_dist = false
+                var target_dist = 0.1
+                virtual_dist -=  0.01 * delta
+                virtual_dist = max(virtual_dist, 0.0) #el max deberia de ser..
 
-				if virtual_dist >= target_dist:
-					increasing_dist = false
-					print(main.get_inte())
-					print('dejamos de aumentar int')
-					virtual_dist = 0.0
+                main.set_inte(virtual_dist)
 
-		if increasing_blur:
-			var main = get_node("/root/Main")
-			if main:
-				var current_blur = main.get_blur()
-				var target_blur = 1.0  # Valor máximo de blur deseado
-				virtual_blur += 0.2 * delta
-				virtual_blur = min(virtual_blur, target_blur)
-				
-				main.set_blur(virtual_blur)
-				
-				if virtual_blur >= target_blur:
-					increasing_blur = false
-					virtual_blur = 0.0  # Restablecer el valor de virtual_blur
-	
-	update_animation()
+                if virtual_dist <= 0.0:
+                    increasing_dist = false
+                    print(main.get_inte())
+                    print('dejamos de disminuir int')
+                    virtual_dist = target_dist
+
+        if increasing_blur:
+            var main = get_node("/root/Main")
+            if main:
+                var current_blur = main.get_blur()
+                var target_blur = 1.0  # Valor máximo de blur deseado
+                virtual_blur += 0.2 * delta
+                virtual_blur = min(virtual_blur, target_blur)
+                
+                main.set_blur(virtual_blur)
+                
+                if virtual_blur >= target_blur:
+                    increasing_blur = false
+                    virtual_blur = 0.0  # Restablecer el valor de virtual_blur
+    
+    update_animation()
 
 func _input(event: InputEvent) -> void:
-	if is_multiplayer_authority():
-		handle_input(event)
+    if is_multiplayer_authority():
+        handle_input(event)
 
 func handle_movement(delta: float) -> void:
-	if not is_on_floor():
-		velocity.y += gravity * delta
-	var move_input = Input.get_axis("move_left", "move_right")
-	velocity.x = move_toward(velocity.x, move_input * speed, acceleration * delta)
-	var vertical_input = Input.get_axis("move_up", "move_down")
-	velocity.y = move_toward(velocity.y, vertical_input * speed, acceleration * delta)
-	send_data.rpc(global_position)
-	move_and_slide()
+    if not is_on_floor():
+        velocity.y += gravity * delta
+    var move_input = Input.get_axis("move_left", "move_right")
+    velocity.x = move_toward(velocity.x, move_input * speed, acceleration * delta)
+    var vertical_input = Input.get_axis("move_up", "move_down")
+    velocity.y = move_toward(velocity.y, vertical_input * speed, acceleration * delta)
+    send_data.rpc(global_position)
+    move_and_slide()
 
 func handle_input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion:
-		update_mouse_position(event.position)
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		handle_shooting.rpc()
-	else:
-		disable_shooting.rpc()
-	
-	if event.is_action_pressed("test"):
-		handle_test_action()
-	if event.is_action_pressed("drunk_test"):
-		drunk += 10
-	if event.is_action_pressed("ui_select"):
-		var main = get_node("/root/Main")
-		if main:
-			print("pasamos a main")
-			attack += 10
-			#main.set_inte(0.1)
-			#increasing_blur = true
-			#animated_sprite_2d.set_shader_parameter("param_name", 0.0)
-			
+    if event is InputEventMouseMotion:
+        update_mouse_position(event.position)
+    if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+        handle_shooting.rpc()
+    else:
+        disable_shooting.rpc()
+    
+    if event.is_action_pressed("test"):
+        handle_test_action()
+    if event.is_action_pressed("drunk_test"):
+        drunk += 100
+    if event.is_action_pressed("ui_select"):
+        var main = get_node("/root/Main")
+        if main:
+            print("pasamos a main")
+            attack += 10
+            #main.set_inte(0.1)
+            #increasing_blur = true
+            #animated_sprite_2d.set_shader_parameter("param_name", 0.0)
+            
 
-			
-			increasing_dist = true
+            
+            increasing_dist = true
 
 func update_mouse_position(mouse_position: Vector2) -> void:
-	apuntar.rpc(mouse_position)
+    apuntar.rpc(mouse_position)
 
 @rpc("call_local")
 func handle_shooting() -> void:
-	$Punch/CollissionPunch.disabled = false
-	animated_sprite.play("punch")
-	print("click")
+    $Punch/CollissionPunch.disabled = false
+    animated_sprite.play("punch")
+    print("click")
 
 @rpc("call_local")
 func disable_shooting() -> void:
-	$Punch/CollissionPunch.disabled = true
+    $Punch/CollissionPunch.disabled = true
 
 func handle_test_action() -> void:
-	for player in Game.players:
-		if player.id != multiplayer.get_unique_id():
-			PUNCHED.emit(player.id)
-	score += 1
+    for player in Game.players:
+        if player.id != multiplayer.get_unique_id():
+            PUNCHED.emit(player.id)
+    score += 1
 
 func setup(player_data: Statics.PlayerData):
-	name = str(player_data.id)
-	set_multiplayer_authority(player_data.id)
-	multiplayer_spawner.set_multiplayer_authority(player_data.id)
-	multiplayer_synchronizer.set_multiplayer_authority(player_data.id)
-	
-	if multiplayer.get_unique_id() == player_data.id:
-		gui.show()
-	health_bar.visible = multiplayer.get_unique_id() != player_data.id
-	drunk_bar.visible = multiplayer.get_unique_id() != player_data.id
+    name = str(player_data.id)
+    set_multiplayer_authority(player_data.id)
+    multiplayer_spawner.set_multiplayer_authority(player_data.id)
+    multiplayer_synchronizer.set_multiplayer_authority(player_data.id)
+    
+    if multiplayer.get_unique_id() == player_data.id:
+        gui.show()
+    health_bar.visible = multiplayer.get_unique_id() != player_data.id
+    drunk_bar.visible = multiplayer.get_unique_id() != player_data.id
 
 @rpc("authority", "call_local", "reliable")
 func test(name):
-	var message = "test " + name
-	var sender_id = multiplayer.get_remote_sender_id()
-	var sender_player = Game.get_player(sender_id)
-	Debug.log(message)
-	Debug.log(sender_player.name)
+    var message = "test " + name
+    var sender_id = multiplayer.get_remote_sender_id()
+    var sender_player = Game.get_player(sender_id)
+    Debug.log(message)
+    Debug.log(sender_player.name)
 
 @rpc
 func send_data(pos: Vector2):
-	global_position = pos
+    global_position = pos
 
 @rpc("call_local")
 func apuntar(mouse_position: Vector2) -> void:
-	look_at(mouse_position)
+    look_at(mouse_position)
 
 func _on_picked(object: String):
-	drunk += 10
-	Debug.log(object)
-	if object == "Beer":
-		attack += 10
-		change_red_buff.rpc()
-		
-		start_attack_timer()
-		
-	Debug.log(attack)
-	
+    drunk += 20
+    
+    Debug.log(object)
+    var four_first = object.substr(0, 4)
+    print('los 4 digitos son: ' + four_first)
+    
+    
+    if four_first == "Beer":
+        attack += 5
+        change_red_buff.rpc()
+        
+        start_attack_timer()
+        
+    if four_first == 'Wine':
+        health += 10 
+        
+    Debug.log(attack)
+
+    
 @rpc("call_local")
 func change_red_buff() -> void:
-	var is_buf_red = $AnimatedSprite2D.get_use_parent_material()
-	var inverted_buf_red = !is_buf_red
-	$AnimatedSprite2D.set_use_parent_material(inverted_buf_red)
-	
+    var is_buf_red = $AnimatedSprite2D.get_use_parent_material()
+    var inverted_buf_red = !is_buf_red
+    $AnimatedSprite2D.set_use_parent_material(inverted_buf_red)
+    
 func _on_punch_body_entered(body): 
-	if body.is_in_group("HIT") and is_multiplayer_authority():
-		Debug.log("SEÑAL")
-		body.take_damage()
-		handle_test_action()
+    if body.is_in_group("HIT") and is_multiplayer_authority():
+        Debug.log("SEÑAL")
+        body.take_damage()
+        handle_test_action()
+
 
 func update_animation() -> void:
-	if animated_sprite.animation == "punch" and animated_sprite.is_playing():
-		return 
-	if velocity.x != 0 or velocity.y != 0:
-		animated_sprite.play("walk")
-	else:
-		animated_sprite.play("idle")
+    if animated_sprite.animation == "punch" and animated_sprite.is_playing():
+        return 
+    if velocity.x != 0 or velocity.y != 0:
+        animated_sprite.play("walk")
+        
+    else:
+        animated_sprite.play("idle")
+
+@rpc("call_local")
+func walking() -> void:
+    animated_sprite.play("walk")
+    
 
 func _on_animation_finished(animation_name: String) -> void:
-	if animation_name == "punch":
-		update_animation()
+    if animation_name == "punch":
+        update_animation()
 
 func _on_health_changed(new_health) -> void:
-	health_bar.value = new_health
-	if health_bar.value == 0:
-		print("waos")
-		switch_game_over.rpc()
+    health_bar.value = new_health
+    if health_bar.value == 0:
+        print("waos")
+        switch_game_over.rpc()
 
 func take_damage():
-	Debug.log("DAÑO_TOMADO")
+    Debug.log("DAÑO_TOMADO")
 
 @rpc("call_local")
 func switch_game_over() -> void:
-	var pscene = load("res://GAME_OVER.tscn")
-	get_tree().change_scene_to_packed(pscene)
+    var pscene = load("res://GAME_OVER.tscn")
+    get_tree().change_scene_to_packed(pscene)
 
 @rpc("any_peer", "call_local")
 func take_damage2(damage) -> void:
-	health -= damage
+    health -= damage
 
 func _on_drunk_changed(new_drunk) -> void:
-	drunk_bar.value = new_drunk
-	
+    drunk_bar.value = new_drunk
+    
 func _on_atack_changed(new_attack) -> void:
-	#attack = new_attack
-	Debug.log(new_attack)
-	
+    #attack = new_attack
+    Debug.log(new_attack)
+    
 func start_attack_timer() -> void:
-	await get_tree().create_timer(15.0).timeout
-	Debug.log("15 segundos pasados, buffo terminado")
-	attack -= 10
-	
-	
+    await get_tree().create_timer(15.0).timeout
+    Debug.log("15 segundos pasados, buffo terminado")
+    attack -= 10
+    change_red_buff.rpc()
+    
+    
 
 
 

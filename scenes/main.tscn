@@ -17,7 +17,7 @@ shader_parameter/blur = 2.0
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ftmr3"]
 shader = ExtResource("7_uhrh3")
 shader_parameter/wave_count = 10.0
-shader_parameter/intensity = 0.14
+shader_parameter/intensity = 0.108
 shader_parameter/max_speed = 8.0
 shader_parameter/rainbow_effect = 0.0
 
@@ -32,10 +32,10 @@ player_scene = ExtResource("2_jyiyy")
 [node name="SpawnPoints" type="Node2D" parent="."]
 
 [node name="PlayerA" type="Marker2D" parent="SpawnPoints"]
-position = Vector2(-62, 30)
+position = Vector2(289, 204)
 
 [node name="PlayerB" type="Marker2D" parent="SpawnPoints"]
-position = Vector2(140, 29)
+position = Vector2(444, 197)
 
 [node name="ItemA" type="Marker2D" parent="SpawnPoints"]
 position = Vector2(288, 547)
@@ -49,12 +49,13 @@ texture = ExtResource("3_ryb57")
 [node name="Beer" parent="." instance=ExtResource("4_0qm31")]
 position = Vector2(444, 542)
 
-[node name="Beer2" parent="." instance=ExtResource("4_0qm31")]
+[node name="Wine" parent="." instance=ExtResource("4_0qm31")]
 position = Vector2(680, 548)
 
 [node name="PauseScreen" parent="." instance=ExtResource("5_apjyh")]
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
+visible = false
 
 [node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
 material = SubResource("ShaderMaterial_pcm5m")
