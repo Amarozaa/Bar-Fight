@@ -104,6 +104,9 @@ func _physics_process(delta: float) -> void:
             #gatito se calcula como la distorsion 
             var gatito = 0.005 * drunk
             var main = get_node("/root/Main")
+            if not main:
+                return
+            #ojo que aqui hay un error cuando se muere el personaje al haber tomado una cuestion.
             main.set_inte(gatito)
             
             #proporcion a la cual debemos de disminuir gaitto 
@@ -257,12 +260,13 @@ func _on_picked(object: String):
     
     Debug.log(object)
     var four_first = object.substr(0, 4)
-    print('los 4 digitos son: ' + four_first)
+    print('los 4 letras son: ' + four_first)
     
     
     if four_first == "Beer":
         attack += 5
-        change_red_buff.rpc()
+        if attack == 15: #el primer buff
+            change_red_buff.rpc()
         
         start_attack_timer()
         
@@ -277,6 +281,13 @@ func change_red_buff() -> void:
     var is_buf_red = $AnimatedSprite2D.get_use_parent_material()
     var inverted_buf_red = !is_buf_red
     $AnimatedSprite2D.set_use_parent_material(inverted_buf_red)
+    #var n1 =  $AnimatedSprite2D.get_material()
+    
+    #print(n1)
+    #var shh = load(res://scenes/glowred.gdshader)
+    #$AnimatedSprite2D.set_material(shh)
+    #que revise si tiene un material
+    #si no tiene, que se le annnada, y si tiene que se le ponga nulo
     
 func _on_punch_body_entered(body): 
     if body.is_in_group("HIT") and is_multiplayer_authority():
@@ -329,10 +340,11 @@ func _on_atack_changed(new_attack) -> void:
     Debug.log(new_attack)
     
 func start_attack_timer() -> void:
-    await get_tree().create_timer(15.0).timeout
-    Debug.log("15 segundos pasados, buffo terminado")
-    attack -= 10
-    change_red_buff.rpc()
+    await get_tree().create_timer(10.0).timeout
+    Debug.log("10 segundos pasados, buffo terminado")
+    attack -= 5
+    if attack == 10:
+        change_red_buff.rpc()
     
     
 
