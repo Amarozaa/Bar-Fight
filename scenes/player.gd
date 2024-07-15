@@ -26,6 +26,8 @@ var virtual_blur = 0.0
 
 var virtual_dist = 0.000001
 
+var punch_cooldown = false
+
 
 
 
@@ -71,6 +73,7 @@ var bandera = true
 # Functions
 func _ready() -> void:
     #señal conecta con metodo
+    punch_cooldown = false
     picked.connect(_on_picked)
     gui.update_health(health)
     gui.update_drunkness(drunk)
@@ -214,9 +217,21 @@ func update_mouse_position(mouse_position: Vector2) -> void:
 
 @rpc("call_local")
 func handle_shooting() -> void:
+    if punch_cooldown:
+        return
     $Punch/CollissionPunch.disabled = false
     animated_sprite.play("punch")
     print("click")
+    punch_cooldown = true
+    start_punch_cooldown_timer()
+    
+func start_punch_cooldown_timer() -> void:
+    
+    await get_tree().create_timer(3.0).timeout
+    #podriamos ponerle algo visual cuando esta esperando, para que se note que esta en cooldown
+    Debug.log('ya puedes atacar')
+    
+    punch_cooldown = false
 
 @rpc("call_local")
 func disable_shooting() -> void:
