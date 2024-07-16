@@ -12,10 +12,10 @@ signal drunkness_changed(value)
 signal attack_changed(value)
 
 # Variables
-var speed = 200
+var speed = 300
 var jump_speed = 300
 var gravity = 0
-var acceleration = 300
+var acceleration = 500
 var _score = 1
 var top = 50
 
@@ -194,12 +194,11 @@ func handle_movement(delta: float) -> void:
 	move_and_slide()
 
 func handle_input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion:
-		update_mouse_position(event.position)
-	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		handle_shooting.rpc()
-	else:
-		disable_shooting.rpc()
+	if is_multiplayer_authority():
+		if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
+			handle_shooting.rpc()
+		elif event is InputEventMouseMotion:
+			update_mouse_position(event.position)
 	
 	if event.is_action_pressed("test"):
 		handle_test_action()
@@ -232,6 +231,8 @@ func handle_shooting() -> void:
 	sound_miss.play()
 	await get_tree().create_timer(0.7).timeout
 	$Punch/CollissionPunch.disabled = false
+	await get_tree().create_timer(0.05).timeout  # Pequeño retraso antes de desactivar
+	disable_shooting()
 	emit_signal("punch_landed", global_position)
 	
 func start_punch_cooldown_timer() -> void:
@@ -317,24 +318,33 @@ func _on_punch_body_entered(body):
 	if body.is_in_group("HIT") and is_multiplayer_authority():
 		Debug.log("SEÑAL")
 		body.take_damage()
+		body.animated_sprite.play("pain")
 		handle_test_action()
-		apply_knockback(body.global_position,0.5) #el atacante pa tras
-		body.apply_knockback(global_position,1.5) #el atacado pa tras
+		body.apply_knockback(global_position,1.5, true) #el atacado pa tras
+		apply_knockback(body.global_position,1, false) #el atacante pa tras
 
-func apply_knockback(attacker_position: Vector2, multiplic) -> void:
+func apply_knockback(attacker_position: Vector2, multiplic, pain) -> void:
 	var direction = global_position - attacker_position
 	direction = direction.normalized()
 	var knockback_magnitude = 50*multiplic  # quizas multiplicarlo por la borrachera
 	var knockback_distance = direction * knockback_magnitude
 	global_position += knockback_distance
+	if pain:
+		animated_sprite.play("pain")
+	else:
+		animated_sprite.play("idle")
 
 func _on_punch_landed(attacker_position: Vector2) -> void:
 	if is_multiplayer_authority():
 		return
-	apply_knockback(attacker_position,1)
+	apply_knockback(attacker_position,0, true)
 
 func update_animation() -> void:
 	if animated_sprite.animation == "punch" and animated_sprite.is_playing():
+		return 
+	if animated_sprite.animation == "defeat" and animated_sprite.is_playing():
+		return 
+	if animated_sprite.animation == "pain" and animated_sprite.is_playing():
 		return 
 	if velocity.x != 0 or velocity.y != 0:
 		animated_sprite.play("walk")
