@@ -85,13 +85,13 @@ func _ready() -> void:
 	gui.update_drunkness(drunk)
 	health_changed.connect(gui.update_health)
 	health_changed.connect(_on_health_changed)
-	
 	attack_changed.connect(_on_atack_changed)
 	
 	drunkness_changed.connect(gui.update_drunkness)
 	drunkness_changed.connect(_on_drunk_changed)
 	animated_sprite.connect("animation_finished", Callable(self, "_on_animation_finished"))
 	gui.hide()
+	connect("punch_landed", Callable(self, "_on_punch_landed"))
 
 func _physics_process(delta: float) -> void:
 	if is_multiplayer_authority():
@@ -225,7 +225,6 @@ func update_mouse_position(mouse_position: Vector2) -> void:
 func handle_shooting() -> void:
 	if punch_cooldown:
 		return
-	#$Punch/CollissionPunch.disabled = false
 	animated_sprite.play("punch")
 	print("click")
 	punch_cooldown = true
@@ -233,6 +232,7 @@ func handle_shooting() -> void:
 	sound_miss.play()
 	await get_tree().create_timer(0.7).timeout
 	$Punch/CollissionPunch.disabled = false
+	emit_signal("punch_landed", global_position)
 	
 func start_punch_cooldown_timer() -> void:
 	
@@ -318,7 +318,20 @@ func _on_punch_body_entered(body):
 		Debug.log("SEÑAL")
 		body.take_damage()
 		handle_test_action()
+		apply_knockback(body.global_position,0.5) #el atacante pa tras
+		body.apply_knockback(global_position,1.5) #el atacado pa tras
 
+func apply_knockback(attacker_position: Vector2, multiplic) -> void:
+	var direction = global_position - attacker_position
+	direction = direction.normalized()
+	var knockback_magnitude = 50*multiplic  # quizas multiplicarlo por la borrachera
+	var knockback_distance = direction * knockback_magnitude
+	global_position += knockback_distance
+
+func _on_punch_landed(attacker_position: Vector2) -> void:
+	if is_multiplayer_authority():
+		return
+	apply_knockback(attacker_position,1)
 
 func update_animation() -> void:
 	if animated_sprite.animation == "punch" and animated_sprite.is_playing():
