@@ -219,11 +219,13 @@ func update_mouse_position(mouse_position: Vector2) -> void:
 func handle_shooting() -> void:
 	if punch_cooldown:
 		return
-	$Punch/CollissionPunch.disabled = false
+	#$Punch/CollissionPunch.disabled = false
 	animated_sprite.play("punch")
 	print("click")
 	punch_cooldown = true
 	start_punch_cooldown_timer()
+	await get_tree().create_timer(0.8).timeout
+	$Punch/CollissionPunch.disabled = false
 	
 func start_punch_cooldown_timer() -> void:
 	
