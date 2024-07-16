@@ -1,4 +1,4 @@
-[gd_scene load_steps=41 format=3 uid="uid://8d3ys4aw51lk"]
+[gd_scene load_steps=43 format=3 uid="uid://8d3ys4aw51lk"]
 
 [ext_resource type="Shader" path="res://scenes/glowred.gdshader" id="1_3m4gb"]
 [ext_resource type="Script" path="res://scenes/player.gd" id="1_7q1sy"]
@@ -7,6 +7,8 @@
 [ext_resource type="PackedScene" uid="uid://dkpmqn4oa3a7n" path="res://ui/gui.tscn" id="4_v6n38"]
 [ext_resource type="Texture2D" uid="uid://b11exa5177pk" path="res://sprite_bases_corrected.png" id="5_mnsv3"]
 [ext_resource type="Script" path="res://ui/gui.gd" id="5_p42ay"]
+[ext_resource type="AudioStream" uid="uid://daslknhdr700s" path="res://music/hit.wav" id="8_pki4b"]
+[ext_resource type="AudioStream" uid="uid://dojffd4byxien" path="res://music/miss.wav" id="9_pfxp2"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_67exc"]
 radius = 60.0
@@ -308,5 +310,12 @@ offset_right = 54.0
 offset_bottom = -70.0
 theme_override_styles/background = SubResource("StyleBoxFlat_isnqi")
 theme_override_styles/fill = SubResource("StyleBoxFlat_0o62o")
+
+[node name="hit" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("8_pki4b")
+
+[node name="miss" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("9_pfxp2")
+volume_db = -11.304
 
 [connection signal="body_entered" from="Punch" to="." method="_on_punch_body_entered"]

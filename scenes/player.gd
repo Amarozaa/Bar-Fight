@@ -1,6 +1,9 @@
 class_name Player
 extends CharacterBody2D
 
+
+
+
 # Signals
 signal picked(object)
 signal health_changed(value)
@@ -65,6 +68,9 @@ var punch_cooldown = false
 @onready var gui: CanvasLayer = $GUI
 @onready var health_bar = $HealthBar # Barra de vida propia, solo sale si no somos auth
 @onready var drunk_bar = $DrunkBar
+
+@onready var sound_hit= $hit
+@onready var sound_miss= $miss
 
 @onready var animated_sprite_2d = $AnimatedSprite2D
 
@@ -224,7 +230,8 @@ func handle_shooting() -> void:
 	print("click")
 	punch_cooldown = true
 	start_punch_cooldown_timer()
-	await get_tree().create_timer(0.8).timeout
+	sound_miss.play()
+	await get_tree().create_timer(0.7).timeout
 	$Punch/CollissionPunch.disabled = false
 	
 func start_punch_cooldown_timer() -> void:
