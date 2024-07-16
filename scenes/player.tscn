@@ -1,4 +1,4 @@
-[gd_scene load_steps=54 format=3 uid="uid://8d3ys4aw51lk"]
+[gd_scene load_steps=55 format=3 uid="uid://8d3ys4aw51lk"]
 
 [ext_resource type="Shader" path="res://scenes/glowred.gdshader" id="1_3m4gb"]
 [ext_resource type="Script" path="res://scenes/player.gd" id="1_7q1sy"]
@@ -9,6 +9,7 @@
 [ext_resource type="Script" path="res://ui/gui.gd" id="5_p42ay"]
 [ext_resource type="AudioStream" uid="uid://daslknhdr700s" path="res://music/hit.wav" id="8_pki4b"]
 [ext_resource type="AudioStream" uid="uid://dojffd4byxien" path="res://music/miss.wav" id="9_pfxp2"]
+[ext_resource type="AudioStream" uid="uid://d1hhmju5glkrl" path="res://music/glupi.wav" id="10_cjgwv"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_67exc"]
 radius = 60.0
@@ -398,5 +399,9 @@ volume_db = -11.304
 libraries = {
 "": SubResource("AnimationLibrary_aum2x")
 }
+
+[node name="glupi" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("10_cjgwv")
+volume_db = -15.271
 
 [connection signal="body_entered" from="Punch" to="." method="_on_punch_body_entered"]

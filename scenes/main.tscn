@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://b5hufqs7sbm01"]
+[gd_scene load_steps=22 format=3 uid="uid://b5hufqs7sbm01"]
 
 [ext_resource type="Script" path="res://scenes/main.gd" id="1_ysfbh"]
 [ext_resource type="PackedScene" uid="uid://8d3ys4aw51lk" path="res://scenes/player.tscn" id="2_jyiyy"]
@@ -23,6 +23,46 @@ shader_parameter/rainbow_effect = 0.0
 
 [sub_resource type="CanvasTexture" id="CanvasTexture_bibvu"]
 
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_1scqo"]
+a = Vector2(-445, -116)
+b = Vector2(587, -114)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_4kdfn"]
+a = Vector2(21, 973)
+b = Vector2(28, 112)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_ghs4j"]
+a = Vector2(1093, 997)
+b = Vector2(1091, 140)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_qx0hs"]
+a = Vector2(48, 1000)
+b = Vector2(1089, 994)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_gtibn"]
+a = Vector2(851, 457)
+b = Vector2(206, 456)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_73v4g"]
+a = Vector2(770, 461)
+b = Vector2(781, 113)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_c4rvd"]
+a = Vector2(851, 675)
+b = Vector2(850, 457)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_asknf"]
+a = Vector2(850, 778)
+b = Vector2(853, 1002)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_u6suu"]
+a = Vector2(365, 302)
+b = Vector2(362, 452)
+
+[sub_resource type="SegmentShape2D" id="SegmentShape2D_5niot"]
+a = Vector2(371, 115)
+b = Vector2(371, 200)
+
 [node name="Main" type="Node2D"]
 script = ExtResource("1_ysfbh")
 player_scene = ExtResource("2_jyiyy")
@@ -30,6 +70,7 @@ player_scene = ExtResource("2_jyiyy")
 [node name="Players" type="Node2D" parent="."]
 
 [node name="SpawnPoints" type="Node2D" parent="."]
+visible = false
 
 [node name="PlayerA" type="Marker2D" parent="SpawnPoints"]
 position = Vector2(289, 204)
@@ -54,16 +95,18 @@ position = Vector2(880, 222)
 
 [node name="Pixelartbar" type="Sprite2D" parent="."]
 show_behind_parent = true
-position = Vector2(573.5, 482)
+position = Vector2(570, 566)
 scale = Vector2(0.508889, 0.493333)
 texture = ExtResource("3_ryb57")
 
 [node name="PauseScreen" parent="." instance=ExtResource("5_apjyh")]
+visible = false
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 visible = false
 
 [node name="TextureRect" type="TextureRect" parent="CanvasLayer"]
+visible = false
 material = SubResource("ShaderMaterial_pcm5m")
 offset_left = -10.0
 offset_top = -1.0
@@ -72,6 +115,7 @@ offset_bottom = 940.0
 texture = SubResource("CanvasTexture_8q1jb")
 
 [node name="DISTORSION" type="CanvasLayer" parent="."]
+visible = false
 
 [node name="TextureRect" type="TextureRect" parent="DISTORSION"]
 material = SubResource("ShaderMaterial_ftmr3")
@@ -86,3 +130,43 @@ stream = ExtResource("7_q7iy7")
 volume_db = -26.0
 pitch_scale = 0.95
 autoplay = true
+
+[node name="walls" type="Node2D" parent="."]
+
+[node name="StaticBody2D" type="StaticBody2D" parent="walls"]
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="walls/StaticBody2D"]
+position = Vector2(504, 255)
+shape = SubResource("SegmentShape2D_1scqo")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="walls/StaticBody2D"]
+position = Vector2(23, 27)
+shape = SubResource("SegmentShape2D_4kdfn")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="walls/StaticBody2D"]
+shape = SubResource("SegmentShape2D_ghs4j")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="walls/StaticBody2D"]
+shape = SubResource("SegmentShape2D_qx0hs")
+
+[node name="CollisionShape2D5" type="CollisionShape2D" parent="walls/StaticBody2D"]
+shape = SubResource("SegmentShape2D_gtibn")
+
+[node name="CollisionShape2D6" type="CollisionShape2D" parent="walls/StaticBody2D"]
+shape = SubResource("SegmentShape2D_73v4g")
+
+[node name="CollisionShape2D7" type="CollisionShape2D" parent="walls/StaticBody2D"]
+shape = SubResource("SegmentShape2D_c4rvd")
+
+[node name="CollisionShape2D8" type="CollisionShape2D" parent="walls/StaticBody2D"]
+shape = SubResource("SegmentShape2D_asknf")
+
+[node name="CollisionShape2D9" type="CollisionShape2D" parent="walls/StaticBody2D"]
+position = Vector2(504, 255)
+shape = SubResource("SegmentShape2D_1scqo")
+
+[node name="CollisionShape2D10" type="CollisionShape2D" parent="walls/StaticBody2D"]
+shape = SubResource("SegmentShape2D_u6suu")
+
+[node name="CollisionShape2D11" type="CollisionShape2D" parent="walls/StaticBody2D"]
+shape = SubResource("SegmentShape2D_5niot")

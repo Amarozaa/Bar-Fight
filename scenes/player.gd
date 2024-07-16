@@ -37,7 +37,7 @@ var punch_cooldown = false
 
 
 
-@export var attack = 10:
+@export var attack = 5:
 	set(value):
 		attack = value
 		attack_changed.emit(attack)
@@ -71,6 +71,7 @@ var punch_cooldown = false
 
 @onready var sound_hit= $hit
 @onready var sound_miss= $miss
+@onready var glup= $glupi
 
 @onready var animated_sprite_2d = $AnimatedSprite2D
 
@@ -282,6 +283,7 @@ func apuntar(mouse_position: Vector2) -> void:
 
 func _on_picked(object: String):
 	drunk += 20
+	glup.play()
 	
 	Debug.log(object)
 	var four_first = object.substr(0, 4)
@@ -340,11 +342,11 @@ func _on_punch_landed(attacker_position: Vector2) -> void:
 	apply_knockback(attacker_position,0, true)
 
 func update_animation() -> void:
-	if animated_sprite.animation == "punch" and animated_sprite.is_playing():
-		return 
 	if animated_sprite.animation == "defeat" and animated_sprite.is_playing():
 		return 
 	if animated_sprite.animation == "pain" and animated_sprite.is_playing():
+		return 
+	if animated_sprite.animation == "punch" and animated_sprite.is_playing():
 		return 
 	if velocity.x != 0 or velocity.y != 0:
 		animated_sprite.play("walk")
@@ -396,8 +398,6 @@ func start_attack_timer() -> void:
 		change_red_buff.rpc()
 	
 	
-
-
 
 #authority,call remote, relible
 #authority: solo el con autoridad puede llamar.
