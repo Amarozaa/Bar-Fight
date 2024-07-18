@@ -349,7 +349,8 @@ func update_animation() -> void:
 	if animated_sprite.animation == "punch" and animated_sprite.is_playing():
 		return 
 	if velocity.x != 0 or velocity.y != 0:
-		animated_sprite.play("walk")
+		#animated_sprite.play("walk")
+		walking.rpc()
 		
 	else:
 		animated_sprite.play("idle")
