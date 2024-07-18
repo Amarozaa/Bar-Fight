@@ -95,7 +95,10 @@ Meet the crew:
 - José Vásquez
 - Amaro Zurita
 
-Sprites:"
+Sprites:
+-Mapa: Tomás Guzmán
+-Bebidas alcohólicas: Amaro Zurita
+-Personaje: "
 
 [node name="CreditsToMenu" type="Button" parent="PanelContainer/Menus/CreditsMenu"]
 unique_name_in_owner = true

@@ -1,18 +1,42 @@
-[gd_scene format=3 uid="uid://don0fs7w0s0q2"]
+[gd_scene load_steps=2 format=3 uid="uid://don0fs7w0s0q2"]
 
-[node name="GAMEOVER" type="Label"]
-offset_left = 147.0
-offset_top = 109.0
-offset_right = 1100.0
-offset_bottom = 440.0
-theme_override_font_sizes/font_size = 166
-text = "GAME OVER"
+[ext_resource type="LabelSettings" uid="uid://j2it44wapyrc" path="res://Assets/fonts/game_over.tres" id="1_rbfn2"]
 
-[node name="Label" type="Label" parent="."]
+[node name="GAMEOVER" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Color_background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -246.0
+offset_bottom = 226.0
+grow_horizontal = 2
+grow_vertical = 2
+color = Color(0.624168, 0.315449, 0.102597, 1)
+
+[node name="Label" type="Label" parent="Color_background"]
 layout_mode = 0
-offset_left = 194.0
-offset_top = 255.0
-offset_right = 715.0
-offset_bottom = 360.0
+offset_left = 291.0
+offset_top = 75.0
+offset_right = 836.0
+offset_bottom = 212.0
+text = "Game Over"
+label_settings = ExtResource("1_rbfn2")
+
+[node name="Label2" type="Label" parent="Color_background"]
+layout_mode = 0
+offset_left = 111.0
+offset_top = 260.0
+offset_right = 1071.0
+offset_bottom = 387.0
 theme_override_font_sizes/font_size = 76
-text = "BOTTOM TEXT"
+text = "Please try again"
+label_settings = ExtResource("1_rbfn2")
