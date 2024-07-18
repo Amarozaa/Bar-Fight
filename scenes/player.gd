@@ -341,6 +341,7 @@ func _on_punch_landed(attacker_position: Vector2) -> void:
 		return
 	apply_knockback(attacker_position,0, true)
 
+@rpc("call_local")
 func update_animation() -> void:
 	if animated_sprite.animation == "defeat" and animated_sprite.is_playing():
 		return 
@@ -349,16 +350,22 @@ func update_animation() -> void:
 	if animated_sprite.animation == "punch" and animated_sprite.is_playing():
 		return 
 	if velocity.x != 0 or velocity.y != 0:
-		animated_sprite.play("walk")
+		#animated_sprite.play("walk")
+		walking.rpc()
 		
 	else:
-		animated_sprite.play("idle")
+		#animated_sprite.play("idle")
+		casual.rpc()
 
 @rpc("call_local")
 func walking() -> void:
 	animated_sprite.play("walk")
-	
 
+@rpc("call_local")
+func casual() -> void:
+	animated_sprite.play("idle")
+
+@rpc("call_local")
 func _on_animation_finished(animation_name: String) -> void:
 	if animation_name == "punch":
 		update_animation()
