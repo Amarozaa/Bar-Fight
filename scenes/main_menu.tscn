@@ -1,6 +1,7 @@
-[gd_scene load_steps=3 format=3 uid="uid://crx2a8cpmrjia"]
+[gd_scene load_steps=4 format=3 uid="uid://crx2a8cpmrjia"]
 
 [ext_resource type="Script" path="res://scenes/main_menu.gd" id="1_q0535"]
+[ext_resource type="Texture2D" uid="uid://hiy3eepsl4pw" path="res://Assets/pexels-pixabay-326333.jpg" id="2_ius5h"]
 [ext_resource type="Texture2D" uid="uid://c386uwbgmb5ik" path="res://keys2.png" id="2_j41h3"]
 
 [node name="MarginContainer" type="MarginContainer"]
@@ -10,6 +11,11 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_q0535")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(557.5, 470.5)
+scale = Vector2(0.238125, 0.302188)
+texture = ExtResource("2_ius5h")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
 custom_minimum_size = Vector2(300, 200)
@@ -98,7 +104,7 @@ Meet the crew:
 Sprites:
 -Mapa: Tomás Guzmán
 -Bebidas alcohólicas: Amaro Zurita
--Personaje: "
+-Personaje: https://www.pngegg.com/es/png-orjfm"
 
 [node name="CreditsToMenu" type="Button" parent="PanelContainer/Menus/CreditsMenu"]
 unique_name_in_owner = true
