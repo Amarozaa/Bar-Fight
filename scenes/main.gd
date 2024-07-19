@@ -71,7 +71,7 @@ func _ready() -> void:
         players.add_child(player)
         player.setup(player_data)
         
-        player.PUNCHED.connect(_on_player_punched)
+        #player.PUNCHED.connect(_on_player_punched)
         #'''
     
     
@@ -153,20 +153,7 @@ func get_inte() -> float:
     return 0.0
     
 
-func _on_player_punched(player_id: int) -> void:
-    punch_player.rpc_id(1, player_id)
+
     
-var attacker_dmg	
-@rpc("any_peer", "call_local")
-func punch_player(player_id: int)-> void:
-    for player in players.get_children():
-        #if player.get_multiplayer_authority() != player_id:
-            #attacker_dmg = player.attack
-        if player.get_multiplayer_authority() == player_id:
-            for w in players.get_children():
-                if w.get_multiplayer_authority() != player_id:
-                    attacker_dmg = w.attack
-            
-        
-            player.take_damage2.rpc_id(player_id, attacker_dmg)
+
         

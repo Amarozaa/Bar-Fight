@@ -151,6 +151,7 @@ offset_bottom = 940.0
 texture = SubResource("CanvasTexture_8q1jb")
 
 [node name="DISTORSION" type="CanvasLayer" parent="."]
+visible = false
 
 [node name="TextureRect" type="TextureRect" parent="DISTORSION"]
 material = SubResource("ShaderMaterial_ftmr3")

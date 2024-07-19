@@ -99,7 +99,9 @@ func _physics_process(delta: float) -> void:
         if drunk > min_drunk:
             if drunk > 100:
                 print('pasaste el maximo, castigado')
-                health -= 20
+                Debug.log('pasaste el MAXIMO')
+                #health -= 20
+                take_damage2.rpc(20)
                 drunk = 100
             
             #reglas de proporciones:
@@ -135,11 +137,7 @@ func _physics_process(delta: float) -> void:
                 #en caso de que quede negativo lo dejamos en 0 como deberia :3
                 main.set_inte(0)
                 print(main.get_inte())
-                
-            
-            
-            
-        
+                    
         handle_movement(delta)
         
         if increasing_dist:
@@ -191,7 +189,7 @@ func handle_movement(delta: float) -> void:
     velocity.x = move_toward(velocity.x, move_input * speed, acceleration * delta)
     var vertical_input = Input.get_axis("move_up", "move_down")
     velocity.y = move_toward(velocity.y, vertical_input * speed, acceleration * delta)
-    send_data.rpc(global_position)
+    send_data.rpc(global_position, velocity)
     move_and_slide()
 
 func handle_input(event: InputEvent) -> void:
@@ -275,8 +273,9 @@ func test(name):
     Debug.log(sender_player.name)
 
 @rpc
-func send_data(pos: Vector2):
+func send_data(pos: Vector2, vel: Vector2):
     global_position = pos
+    velocity= vel
 
 @rpc("call_local")
 func apuntar(mouse_position: Vector2) -> void:
@@ -322,13 +321,17 @@ func change_red_buff() -> void:
     #que revise si tiene un material
     #si no tiene, que se le annnada, y si tiene que se le ponga nulo
     
-func _on_punch_body_entered(body): 
+func _on_punch_body_entered(body):
+    if body == self:
+        return 
     if body.is_in_group("HIT") and is_multiplayer_authority():
         Debug.log("SEÑAL")
+        Debug.log(body.name)
         body.take_damage()
-        body.animated_sprite.play("pain")
+        #body.animated_sprite.play("pain")
         #all_screen_pain.rpc(body)
-        handle_test_action()
+        #handle_test_action()
+        body.take_damage2.rpc(attack)
         body.apply_knockback(global_position,1.5, true) #el atacado pa tras
         apply_knockback(body.global_position,1, false) #el atacante pa tras
 
@@ -340,13 +343,14 @@ func apply_knockback(attacker_position: Vector2, multiplic, pain) -> void:
     global_position += knockback_distance
     if pain:
         #animated_sprite.play("pain")
+        #all_screen_pain.rpc()
         pass
     else:
         animated_sprite.play("idle")
 
-@rpc("call_local")    
-func all_screen_pain(body) -> void:
-    body.animated_sprite.play('pain')
+@rpc("call_remote")    
+func all_screen_pain() -> void:
+    animated_sprite.play("pain")
     
 
 func _on_punch_landed(attacker_position: Vector2) -> void:
@@ -362,8 +366,8 @@ func update_animation() -> void:
     if animated_sprite.animation == "punch" and animated_sprite.is_playing():
         return 
     if velocity.x != 0 or velocity.y != 0:
-        #animated_sprite.play("walk")
-        walking.rpc()
+        animated_sprite.play("walk")
+        #walking.rpc()
         
     else:
         animated_sprite.play("idle")
@@ -380,7 +384,7 @@ func _on_animation_finished(animation_name: String) -> void:
 func _on_health_changed(new_health) -> void:
     health_bar.value = new_health
     if health_bar.value == 0:
-        animated_sprite.play("defeat")
+        #animated_sprite.play("defeat")
         await get_tree().create_timer(3.0).timeout 
         print("waos")
         switch_game_over.rpc()
@@ -396,6 +400,11 @@ func switch_game_over() -> void:
 @rpc("any_peer", "call_local")
 func take_damage2(damage) -> void:
     health -= damage
+
+    if health <= 0:
+        animated_sprite.play('defeat')
+    else:
+        animated_sprite.play('pain') #lo hacia en el otro
 
 func _on_drunk_changed(new_drunk) -> void:
     drunk_bar.value = new_drunk
