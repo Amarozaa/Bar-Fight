@@ -6,7 +6,7 @@ extends CanvasLayer
 
 
 func update_health(value):
-	health_bar.value = value
+    health_bar.value = value
 
 func update_drunkness(value):
-	drunkess_bar.value = value
+    drunkess_bar.value = value
